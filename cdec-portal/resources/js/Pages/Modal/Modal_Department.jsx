@@ -49,19 +49,19 @@ export default function ModalDepartment({ setIsModalOpen }) {
 
                             {/* LEFT */}
                             <div className="flex-1 flex flex-col gap-2">
-                                <label className="text-lg font-medium">Name</label>
+                                <label className="text-lg font-medium">Abbreviation</label>
                                 <input 
                                     type="text" 
-                                    name="department_name" 
-                                    placeholder="" 
+                                    name="abbreviation" 
+                                    placeholder="BSCS" 
                                     className="border rounded-md p-2 w-full" 
                                 />
 
-                                <label className="text-lg font-medium mt-2">Contact Number</label>
+                                <label className="text-lg font-medium mt-2">Name</label>
                                 <input
-                                    type="number"
-                                    name="contact_number"
-                                    placeholder=""
+                                    type="text"
+                                    name="department_name"
+                                    placeholder="Department of Computer Science"
                                     className="border rounded-md p-2 w-full"
                                 />
 
@@ -81,7 +81,7 @@ export default function ModalDepartment({ setIsModalOpen }) {
                                     <option>Business Administration</option>
                                 </select>
 
-                                <label className="text-lg font-medium mt-2">Program</label>
+                                <label className="text-lg font-medium mt-2">Department Dean</label>
                                 <select name='program' className="border rounded-md p-2">
                                     <option></option>
                                     <option>BSBA - FM</option>

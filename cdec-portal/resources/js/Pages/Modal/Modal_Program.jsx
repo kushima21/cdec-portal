@@ -47,14 +47,14 @@ export default function ModalProgram({ setIsModalOpen }) {
                                         <input 
                                             type="text" 
                                             name="abbreviation" 
-                                            placeholder="" 
+                                            placeholder="BSCS" 
                                             className="border rounded-md p-3 w-full" 
                                         />
                                         <label className="text-lg font-medium">Name</label>
                                         <input 
                                             type="text" 
                                             name="program_name" 
-                                            placeholder="" 
+                                            placeholder="Bachelor Science in Computer Science" 
                                             className="border rounded-md p-3 w-full" 
                                         />
                                         <label className="text-lg font-medium">Major</label>
@@ -62,6 +62,16 @@ export default function ModalProgram({ setIsModalOpen }) {
                                             type="text" 
                                             name="major" 
                                             placeholder="N/A" 
+                                            className="border rounded-md p-3 w-full" 
+                                        />                                                                              
+                                    </div>
+                                    {/*right */}
+                                    <div className="flex-1 flex flex-col gap-2">
+                                        <label className="text-lg font-medium">College Department</label>
+                                        <input 
+                                            type="text" 
+                                            name="college_name" 
+                                            placeholder="College of Computer Science" 
                                             className="border rounded-md p-3 w-full" 
                                         />
                                         <label className="text-lg font-medium">College Duration</label>
@@ -71,12 +81,14 @@ export default function ModalProgram({ setIsModalOpen }) {
                                             placeholder="4 YEARS" 
                                             className="border rounded-md p-3 w-full" 
                                         />
+                                    </div>
+
+                                </div>
+                                <div className="w-full  justify-center">
                                         <label className="text-lg font-medium mt-2">Description</label>
                                         <textarea
                                             className="border rounded-md p-2 w-full h-[200px]"
-                                        />                                                                                
-                                    </div>
-
+                                        />  
                                 </div>
                                 {/* SUBMIT */}
                                 <div className="w-full flex justify-center mt-6">

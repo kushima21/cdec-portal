@@ -6,7 +6,9 @@ import AdminLayout from '../Layouts/AdminLayout';
 import ModalColleges from'../Modal/Modal_Colleges';
 
 
-export default function Colleges() {
+export default function Colleges({ users }) {
+
+    
     const [searchQuery, setSearchQuery] = useState('');
 
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -151,9 +153,12 @@ export default function Colleges() {
                     </div>
                 </div>
             </div>
-            {isModalOpen && (
-                <ModalColleges setIsModalOpen={setIsModalOpen} />
-            )}
+{isModalOpen && (
+    <ModalColleges 
+        setIsModalOpen={setIsModalOpen}
+        users={users}
+    />
+)}
         </AdminLayout>
     );
 }

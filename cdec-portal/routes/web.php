@@ -59,6 +59,7 @@ Route::get('/academicyear', fn () => Inertia::render('Admin/AcademicYear'))->nam
 // ✅ Controller will handle rendering instead
 
 Route::get('/users', [UserController::class, 'index'])->name('users');
+Route::get('/colleges', [UserController::class, 'colleges'])->name('colleges');
 Route::post('/users/store', [UserController::class, 'store'])->name('users.store');
 Route::post('/users/update/{id}', [UserController::class, 'update'])->name('users.update');
 

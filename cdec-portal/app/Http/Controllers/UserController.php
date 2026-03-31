@@ -126,4 +126,27 @@ public function update(Request $request, $id)
 
     return redirect()->route('users')->with('success', 'User updated successfully');
 }
+
+
+// fetch user to Colleges 
+
+public function colleges()
+{
+    $users = Users::all()->map(function($user) {
+        return [
+            'id' => $user->id,
+            'firstname' => $user->firstname,
+            'lastname' => $user->lastname,
+            'email' => $user->email,
+            'profile_picture' => $user->profile_picture
+                ? asset($user->profile_picture)
+                : asset('system-images/cdec-logo.png'),
+        ];
+    });
+
+    return Inertia::render('Admin/Colleges', [
+        'users' => $users
+    ]);
 }
+}
+

@@ -85,6 +85,7 @@ export default function AdminLayout({ children }) {
                                 <div className={menuItem}><FaProjectDiagram /> <span>Curricula</span></div>
                                 <div className={menuItem}><FaBook /> <span>Courses</span></div>
                                 <div className={menuItem}><FaBuilding /> <span>Building</span></div>
+                                <div className={menuItem}><FaBuilding /> <span>Colleges</span></div>
                                 <div className={menuItem}><FaTools /> <span>Resources</span></div>
                                 <div className={menuItem}><FaUserGraduate /> <span>Tertiary</span></div>
                                 <div className={menuItem}><FaSitemap /> <span>Departments</span></div>
