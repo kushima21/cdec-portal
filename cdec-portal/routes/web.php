@@ -12,9 +12,8 @@ Route::get('/', function () {
 
 
 Route::get('/register', function () {
-    return Inertia::render('Auth.register', [
-    ]);
-}); 
+    return Inertia::render('Register'); // ✅ match file name
+});
 
 require __DIR__.'/auth.php';
 

@@ -46,9 +46,9 @@
                                         or
                                     </span>
 
-                                    <a href="/register" className='text-blue-500 hover:text-blue-700 pt-2'>
+                                    <Link href="/register" className='text-blue-500 hover:text-blue-700 pt-2'>
                                         <h2 className='text-center text-lg'>Enroll Now</h2>
-                                    </a>
+                                    </Link>
                                     <div className='w-full h-max flex-col'>
                                         <form method="">
                                             <div className='w-full h-max flex-col items-center justify-center pt-5'>
