@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { FaSearch, FaPlus, FaEllipsisV } from 'react-icons/fa';
 import { FiRefreshCw } from 'react-icons/fi';
 import AdminLayout from '../Layouts/AdminLayout';
+import ModalCourse from'../Modal/ModalCourse';
 
 // Custom Recreated Icon for the "Add" action
 const AddCourseIcon = () => (
@@ -19,6 +20,8 @@ const AddCourseIcon = () => (
 );
 
 export default function Courses() {
+
+    const [isModalOpen, setIsModalOpen] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
 
     // Mock data for the table
@@ -78,7 +81,9 @@ export default function Courses() {
                             >
                                 <FiRefreshCw className={`text-lg ${searchQuery ? 'animate-spin' : ''}`} />
                             </button>
-                            <button className='flex items-center gap-3 px-4 py-2 bg-white border-2 border-orange-500 text-orange-600 rounded-xl hover:bg-orange-50 transition-all shadow-sm font-bold'>
+                            <button 
+                            onClick={() => setIsModalOpen(true)}
+                            className='flex items-center gap-3 px-4 py-2 bg-white border-2 border-orange-500 text-orange-600 rounded-xl hover:bg-orange-50 transition-all shadow-sm font-bold'>
                                 <AddCourseIcon />
                                 <span>Add Course</span>
                             </button>
@@ -141,6 +146,9 @@ export default function Courses() {
                     </div>
                 </div>
             </div>
+            {isModalOpen && (
+                <ModalCourse setIsModalOpen={setIsModalOpen} />
+            )}
         </AdminLayout>
     );
 }

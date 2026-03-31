@@ -76,6 +76,8 @@ Route::post('/programs/store', [ProgramController::class, 'store'])->name('progr
 |--------------------------------------------------------------------------
 */
 
+Route::get('/modal', function () { return Inertia::render('Modal/ModalCurricula'); })->name('modal');
+
 /*
 |--------------------------------------------------------------------------
 | Authenticated Routes
