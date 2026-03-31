@@ -18,7 +18,7 @@ public function up(): void
         $table->string('academic_suffix')->nullable();
 
         $table->json('roles'); // multi roles
-        $table->string('email')->unique();
+
         $table->string('username')->unique();
         $table->string('password');
         $table->string('profile_picture')->nullable();
