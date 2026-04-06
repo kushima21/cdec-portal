@@ -1,11 +1,10 @@
-import { Link } from '@inertiajs/react';
+import { router, Link } from '@inertiajs/react';
 import { useState } from 'react';
 import { FaSearch, FaPlus, FaEllipsisV } from 'react-icons/fa';
 import { FiRefreshCw } from 'react-icons/fi';
 import AdminLayout from '../Layouts/AdminLayout';
-import ModalCourse from'../Modal/ModalCourse';
+import ModalCourse from '../Modal/ModalCourse';
 
-// Custom Recreated Icon for the "Add" action
 const AddCourseIcon = () => (
     <div className="relative flex items-center justify-center w-6 h-6 rounded-full shadow-sm bg-gradient-to-br from-orange-400 to-orange-600 shrink-0">
         <svg viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="w-3 h-3">
@@ -19,34 +18,20 @@ const AddCourseIcon = () => (
     </div>
 );
 
-export default function Courses() {
-
+export default function Courses({ courses: initialCourses, search: initialSearch }) {
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [searchQuery, setSearchQuery] = useState('');
+    const [searchQuery, setSearchQuery] = useState(initialSearch || '');
 
-    // Mock data for the table
-    const allCourses = Array.from({ length: 15 }).map((_, i) => ({
-        id: i,
-        code: `IT-${200 + i}`,
-        title: i % 2 === 0 ? 'Data Structures and Algorithms' : 'Advanced Web Development',
-        lec: 3,
-        lab: 2,
-        units: 5
-    }));
-
-    // Filter logic
-    const filteredCourses = allCourses.filter(course => 
-        course.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        course.code.toLowerCase().includes(searchQuery.toLowerCase())
-    );
+    const handleSearch = (e) => {
+        setSearchQuery(e.target.value);
+        router.get(route('courses.index'), { search: e.target.value }, { preserveState: true, replace: true });
+    };
 
     return (
         <AdminLayout>
             <div className='flex flex-col h-full'>
-                
-                {/* Sticky Header Section */}
-                <div className=' pt-[3%] bg-white p-6'>
-                    {/* Breadcrumbs */}
+                {/* Header */}
+                <div className='pt-[3%] bg-white p-6'>
                     <div className='flex items-center py-2 gap-2 text-sm'>
                         <span className='font-bold text-gray-400'>Admin</span>
                         <span className='text-gray-300'>/</span>
@@ -63,14 +48,13 @@ export default function Courses() {
                             <p className='text-gray-500 text-sm mt-1'>Manage and view all academic course offerings.</p>
                         </div>
 
-                        {/* Search & Actions */}
                         <div className='flex gap-3 items-center'>
                             <div className='relative w-[300px]'>
                                 <FaSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
                                 <input
                                     type='text'
                                     value={searchQuery}
-                                    onChange={(e) => setSearchQuery(e.target.value)}
+                                    onChange={handleSearch}
                                     placeholder='Search course or title...'
                                     className='w-full h-10 rounded-xl border-gray-200 focus:border-orange-500 focus:ring-orange-500 pl-10 transition-all shadow-sm'
                                 />
@@ -82,8 +66,8 @@ export default function Courses() {
                                 <FiRefreshCw className={`text-lg ${searchQuery ? 'animate-spin' : ''}`} />
                             </button>
                             <button 
-                            onClick={() => setIsModalOpen(true)}
-                            className='flex items-center gap-3 px-4 py-2 bg-white border-2 border-orange-500 text-orange-600 rounded-xl hover:bg-orange-50 transition-all shadow-sm font-bold'>
+                                onClick={() => setIsModalOpen(true)}
+                                className='flex items-center gap-3 px-4 py-2 bg-white border-2 border-orange-500 text-orange-600 rounded-xl hover:bg-orange-50 transition-all shadow-sm font-bold'>
                                 <AddCourseIcon />
                                 <span>Add Course</span>
                             </button>
@@ -91,9 +75,9 @@ export default function Courses() {
                     </div>
                 </div>
 
-                {/* Table Container */}
+                {/* Table */}
                 <div className='flex-1 mt-4 overflow-hidden flex flex-col'>
-                    <div className='overflow-x-auto overflow-y-auto  bg-white '>
+                    <div className='overflow-x-auto overflow-y-auto bg-white'>
                         <table className='w-full bg-white text-left'>
                             <thead className='bg-white sticky top-0 z-200'>
                                 <tr>
@@ -109,16 +93,16 @@ export default function Courses() {
                                 </tr>
                             </thead>
                             <tbody className='divide-y divide-gray-50'>
-                                {filteredCourses.map((course) => (
+                                {initialCourses.map((course) => (
                                     <tr key={course.id} className='group hover:bg-orange-50/30 transition-colors'>
                                         <td className='p-4'>
                                             <input type='checkbox' className='w-4 h-4 rounded border-gray-300 text-orange-600 focus:ring-orange-500' />
                                         </td>
-                                        <td className='p-4 font-bold text-gray-700'>{course.code}</td>
-                                        <td className='p-4 text-gray-600 font-medium'>{course.title}</td>
-                                        <td className='p-4 text-center text-gray-500'>{course.lec}</td>
-                                        <td className='p-4 text-center text-gray-500'>{course.lab}</td>
-                                        <td className='p-4 text-center font-bold text-orange-600'>{course.units}</td>
+                                        <td className='p-4 font-bold text-gray-700'>{course.course_no}</td>
+                                        <td className='p-4 text-gray-600 font-medium'>{course.descriptive_title}</td>
+                                        <td className='p-4 text-center text-gray-500'>{course.lecture_units}</td>
+                                        <td className='p-4 text-center text-gray-500'>{course.lab_units}</td>
+                                        <td className='p-4 text-center font-bold text-orange-600'>{course.total_units}</td>
                                         <td className='p-4 text-right'>
                                             <button className='p-2 hover:bg-white hover:shadow-sm rounded-lg transition-all text-gray-400 hover:text-orange-600'>
                                                 <FaEllipsisV />
@@ -129,23 +113,9 @@ export default function Courses() {
                             </tbody>
                         </table>
                     </div>
-
-                    {/* Pagination */}
-                    <div className='flex justify-between items-center py-6 px-2'>
-                        <p className='text-sm text-gray-500'>
-                            Showing <span className='font-bold text-gray-800'>{filteredCourses.length}</span> results
-                        </p>
-                        <div className='flex items-center gap-2'>
-                            <button className='px-4 py-2 border border-gray-200 rounded-xl text-sm font-medium hover:bg-white hover:shadow-sm transition-all'>Previous</button>
-                            <div className='flex gap-1'>
-                                <button className='w-10 h-10 flex items-center justify-center rounded-xl bg-orange-600 text-white font-bold shadow-lg shadow-orange-100'>1</button>
-                                <button className='w-10 h-10 flex items-center justify-center rounded-xl hover:bg-white hover:shadow-sm font-medium text-gray-600 transition-all'>2</button>
-                            </div>
-                            <button className='px-4 py-2 border border-gray-200 rounded-xl text-sm font-medium hover:bg-white hover:shadow-sm transition-all'>Next</button>
-                        </div>
-                    </div>
                 </div>
             </div>
+
             {isModalOpen && (
                 <ModalCourse setIsModalOpen={setIsModalOpen} />
             )}

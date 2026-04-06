@@ -18,7 +18,8 @@ const AddIcon = () => (
     </div>
 );
 
-export default function Program() {
+export default function Program({ users }) {
+    console.log("Users in Program.jsx:", users);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
     const [activeProgram, setActiveProgram] = useState('BS Information Technology');
@@ -34,10 +35,7 @@ export default function Program() {
         'BS Computer Science',
         'BS Information Systems',
         'BS Criminology',
-        'BS Criminology',
-        'BS Criminology',
-        'BS Criminology',
-        'BS Criminology'
+
     ];
 
     /* Courses */
@@ -227,9 +225,12 @@ export default function Program() {
                     </div>
                 </div>
             </div>
-            {isModalOpen && (
-                <ModalProgram setIsModalOpen={setIsModalOpen} />
-            )}
+    {isModalOpen && (
+        <ModalProgram 
+            setIsModalOpen={setIsModalOpen} 
+            users={users} // <--- users gi-pass diri
+        />
+    )}
         </AdminLayout>
     );
 }

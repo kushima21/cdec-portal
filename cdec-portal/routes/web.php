@@ -6,6 +6,8 @@ use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ProgramController;
+use App\Http\Controllers\CollegeController;
+use App\Http\Controllers\CourseController;
 
 /*
 |--------------------------------------------------------------------------
@@ -65,12 +67,19 @@ Route::post('/users/update/{id}', [UserController::class, 'update'])->name('user
 
 /*
 |--------------------------------------------------------------------------
-| Program
+| Colleges
 |--------------------------------------------------------------------------
 */
+Route::post('colleges/store', [CollegeController::class, 'store'])->name('college.store');
+Route::get('/colleges', [CollegeController::class, 'index'])->name('colleges');
+Route::post('/colleges/store', [CollegeController::class, 'store'])->name('colleges.store');
 
 Route::post('/programs/store', [ProgramController::class, 'store'])->name('program.store');
 
+// PROGRAMS (IMPORTANT NI)
+Route::get('/program', [UserController::class, 'programs'])->name('program');
+Route::get('/curricula', [ProgramController::class, 'curricula'])->name('curricula');
+Route::get('/curricula', [CourseController::class, 'curricula'])->name('curricula');
 /*
 |--------------------------------------------------------------------------
 | Modal Test
@@ -90,6 +99,14 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
+
+
+/*|--------------------------------------------------------------------------
+| Courses
+|--------------------------------------------------------------------------
+*/
+Route::get('/courses', [CourseController::class, 'index'])->name('courses.index');
+Route::post('/courses/store', [CourseController::class, 'store'])->name('courses.store');
 
 /*
 |--------------------------------------------------------------------------

@@ -148,5 +148,24 @@ public function colleges()
         'users' => $users
     ]);
 }
+
+public function programs()
+{
+    $users = Users::all()->map(function($user) {
+        return [
+            'id' => $user->id,
+            'firstname' => $user->firstname,
+            'lastname' => $user->lastname,
+            'profile_picture' => $user->profile_picture
+                ? asset($user->profile_picture)
+                : asset('system-images/cdec-logo.png'),
+        ];
+    });
+
+    return Inertia::render('Admin/Program', [
+        'users' => $users
+    ]);
+}
+
 }
 

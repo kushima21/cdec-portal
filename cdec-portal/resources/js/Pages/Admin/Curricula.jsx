@@ -20,7 +20,7 @@ const AddCurriculaIcon = () => (
     </div>
 );
 
-export default function Curricula() {
+export default function Curricula({ programs, courses }) {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
 
@@ -153,9 +153,13 @@ export default function Curricula() {
                     </div>
                 </div>
             </div>
-                {isModalOpen && (
-                    <ModalCurricula setIsModalOpen={setIsModalOpen} />
-                )}
+            {isModalOpen && (
+                <ModalCurricula 
+                    setIsModalOpen={setIsModalOpen} 
+                    programs={programs}
+                    courses={courses}   // ✅ ADD THIS
+                />
+            )}
         </AdminLayout>
     );
 }
