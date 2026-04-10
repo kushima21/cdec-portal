@@ -119,6 +119,7 @@ export default function Courses({ courses: initialCourses, search: initialSearch
             {isModalOpen && (
                 <ModalCourse setIsModalOpen={setIsModalOpen} />
             )}
+            
         </AdminLayout>
     );
 }

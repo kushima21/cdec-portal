@@ -21,6 +21,7 @@ public function up(): void
 
         // Store the full name instead of user ID
         $table->string('program_head')->nullable();
+        $table->string('college_id')->nullable();
         $table->string('program_status')->default('Active');
 
         $table->timestamps(); // created_at & updated_at
@@ -35,3 +36,4 @@ public function up(): void
         //
     }
 };
+    

@@ -128,44 +128,29 @@ public function update(Request $request, $id)
 }
 
 
-// fetch user to Colleges 
+// fetch user to Program
 
-public function colleges()
+public function fetchUsersForProgram()
 {
-    $users = Users::all()->map(function($user) {
+    $users = Users::all()->map(function ($user) {
         return [
             'id' => $user->id,
+
+            // 🔹 IMPORTANT: correct fullname
+            'fullname' => trim(
+                ($user->prefix ?? '') . ' ' .
+                $user->firstname . ' ' .
+                ($user->middlename ?? '') . ' ' .
+                $user->lastname . ' ' .
+                ($user->suffix ?? '')
+            ),
+
             'firstname' => $user->firstname,
             'lastname' => $user->lastname,
-            'email' => $user->email,
-            'profile_picture' => $user->profile_picture
-                ? asset($user->profile_picture)
-                : asset('system-images/cdec-logo.png'),
         ];
     });
 
-    return Inertia::render('Admin/Colleges', [
-        'users' => $users
-    ]);
-}
-
-public function programs()
-{
-    $users = Users::all()->map(function($user) {
-        return [
-            'id' => $user->id,
-            'firstname' => $user->firstname,
-            'lastname' => $user->lastname,
-            'profile_picture' => $user->profile_picture
-                ? asset($user->profile_picture)
-                : asset('system-images/cdec-logo.png'),
-        ];
-    });
-
-    return Inertia::render('Admin/Program', [
-        'users' => $users
-    ]);
+    return response()->json($users);
 }
 
 }
-
