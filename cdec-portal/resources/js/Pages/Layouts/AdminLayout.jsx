@@ -5,120 +5,156 @@ import {
   FaCalendarAlt, FaUsers,
   FaUserCog, FaIdBadge
 } from 'react-icons/fa';
+import { Link, usePage } from '@inertiajs/react';
 
 export default function AdminLayout({ children }) {
-    const [open, setOpen] = useState(false);
+  const { url, props } = usePage();
+const auth = props.auth;
 
-    const menuItem = "w-full h-[40px] shadow-sm rounded-md flex items-center gap-3 px-3 mt-2 cursor-pointer hover:bg-gray-50 transition";
+    const menuItem =
+        "w-full h-[40px] shadow-sm rounded-md flex items-center gap-3 px-3 mt-2 cursor-pointer transition";
+
+    // ✅ Reusable Menu Item
+    const renderMenuItem = (icon, label, link) => {
+        const isActive = url.startsWith(link);
+
+        return (
+            <Link
+                href={link}
+                className={`${menuItem} ${
+                    isActive
+                        ? 'bg-orange-100 text-orange-600 font-semibold'
+                        : 'hover:bg-gray-50'
+                }`}
+            >
+                {icon}
+                <span>{label}</span>
+            </Link>
+        );
+    };
 
     return (
         <div className='w-full h-screen overflow-hidden bg-white'>
             <div className='flex h-full'>
 
-                {/* Sidebar */}
+                {/* SIDEBAR */}
                 <div className='w-[17%] h-screen bg-white border-r border-gray-200 shadow-xl p-6 flex flex-col'>
 
-                    {/* Logo */}
+                    {/* LOGO */}
                     <div className='flex items-center gap-4 mb-5'>
-                        <img 
-                        src='/system-images/cdec-logo.png' 
-                        className='w-[80px] h-[80px] object-contain' 
+                        <img
+                            src='/system-images/cdec-logo.png'
+                            className='w-[70px] h-[70px] object-contain'
                         />
-                        <h2 className='text-xl font-bold'>Deon Connect</h2>
-                        <span>v1.2026.2.05</span>
+                        <div>
+                            <h2 className='text-lg font-bold'>Deon Connect</h2>
+                            <span className='text-xs text-gray-400'>v1.2026.2.05</span>
+                        </div>
                     </div>
 
-                    {/* User Info */}
-                    <div 
+                    {/* USER */}
+                    <div
                         onClick={() => setOpen(!open)}
-                        className='w-full flex items-center justify-center text-center shadow-xl p-4 rounded-xl cursor-pointer hover:bg-gray-50 transition'
+                        className='relative w-full flex items-center gap-3 shadow-md p-3 rounded-xl cursor-pointer hover:bg-gray-50 transition'
                     >
-                        <img 
-                            src='/system-images/user.png' 
-                            className='w-10 h-10 rounded-full object-cover shadow'
+                        <img
+                            src='/system-images/user.png'
+                            className='w-10 h-10 rounded-full object-cover'
                         />
-                        <div className='w-full'>
-                            <h2 className='font-semibold text-lg truncate'>John Mark Hondrada</h2>
-                            <p className='text-sm text-gray-500 truncate'>ID:0912331</p>
+
+                        <div className='flex-1'>
+<h2 className='font-semibold text-sm truncate'>
+    {auth?.user?.name}
+</h2>
+
+<p className='text-xs text-gray-500 truncate'>
+    {auth?.user?.email}
+</p>
                         </div>
-                        {/* Dropdown */}
-                    <div className={`w-max fixed mt-[15%] bg-white rounded-xl shadow-2xl p-5 ${open ? 'block' : 'hidden'}`}>
-                        <div className='w-max flex flex-col items-center gap-4'>
-                            <span className='truncate text-sm text-gray-500 text-center'>
-                                Sign in: johnhondrada@ckcm.edu.ph
-                            </span>
 
-                            <div className='w-full h-[50px] bg-gray-50 hover:bg-gray-100 rounded-lg shadow flex items-center px-4 cursor-pointer transition'>
-                                <span className='font-medium'>Settings</span>
+                        {/* DROPDOWN */}
+                        {open && (
+                            <div className='absolute top-16 left-0 w-full bg-white rounded-xl shadow-2xl p-4 z-50'>
+                                <div className='flex flex-col gap-3 text-sm'>
+<span className='text-gray-500 text-center'>
+    {auth?.user?.email}
+</span>
+
+                                    <div className='p-2 rounded-md hover:bg-gray-100 cursor-pointer'>
+                                        Settings
+                                    </div>
+
+                                    <div className='p-2 rounded-md hover:bg-gray-100 cursor-pointer'>
+                                        Night Mode
+                                    </div>
+
+                                    <div className='p-2 rounded-md bg-red-50 hover:bg-red-100 text-red-600 cursor-pointer'>
+                                        Sign out
+                                    </div>
+                                </div>
                             </div>
-
-                            <div className='w-full h-[50px] bg-gray-50 hover:bg-gray-100 rounded-lg shadow flex items-center px-4 cursor-pointer transition'>
-                                <span className='font-medium'>Night Mode</span>
-                            </div>
-
-                            <div className='w-full h-[50px] bg-red-50 hover:bg-red-100 rounded-lg shadow flex items-center px-4 cursor-pointer transition'>
-                                <span className='font-medium text-red-600'>Sign out</span>
-                            </div>
-                        </div>
-                    </div>
-                    </div>
-
-
-                    {/* School Overview */}
-                    <div className='w-full h-[50px] flex items-center justify-center mt-6 rounded-md border-2 border-orange-600 shadow-lg cursor-pointer hover:bg-orange-50 transition'>
-                        <h2 className='font-bold text-lg text-orange-500'>School Overview</h2>
+                        )}
                     </div>
 
-                    {/* Manage Section */}
-                    <div className='w-full mt-5 flex-1 overflow-hidden flex flex-col'>
+                    {/* SCHOOL OVERVIEW */}
+                    <Link
+                        href="/dashboard"
+                        className='w-full h-[45px] flex items-center justify-center mt-6 rounded-md border-2 border-orange-600 shadow-md hover:bg-orange-50 transition'
+                    >
+                        <h2 className='font-semibold text-orange-500'>
+                            School Overview
+                        </h2>
+                    </Link>
 
-                        {/* Scroll Area */}
-                        <div className='w-full overflow-y-auto pr-2 mt-2 flex-1'>
+                    {/* MENU */}
+                    <div className='w-full mt-5 flex-1 flex flex-col overflow-hidden'>
 
-                            <div className='font-semibold text-gray-500 tracking-wide'>
+                        <div className='w-full overflow-y-auto pr-2 flex-1'>
+
+                            {/* MANAGE */}
+                            <div className='text-xs font-semibold text-gray-400 tracking-wide mb-2'>
                                 MANAGE
                             </div>
 
-                            <div className='w-full'>
-                                <div className={menuItem}><FaChalkboardTeacher /> <span>Classes</span></div>
-                                <div className={menuItem}><FaLayerGroup /> <span>Program</span></div>
-                                <div className={menuItem}><FaProjectDiagram /> <span>Curricula</span></div>
-                                <div className={menuItem}><FaBook /> <span>Courses</span></div>
-                                <div className={menuItem}><FaBuilding /> <span>Building</span></div>
-                                <div className={menuItem}><FaBuilding /> <span>Colleges</span></div>
-                                <div className={menuItem}><FaTools /> <span>Resources</span></div>
-                                <div className={menuItem}><FaUserGraduate /> <span>Tertiary</span></div>
-                                <div className={menuItem}><FaSitemap /> <span>Departments</span></div>
-                                <div className={menuItem}><FaSitemap /> <span>Academic Year</span></div>
-                                <div className={menuItem}><FaSitemap /> <span>Academic Term</span></div>
-                            </div>
+                            {renderMenuItem(<FaChalkboardTeacher />, "Classes", "/classes")}
+                            {renderMenuItem(<FaLayerGroup />, "Program", "/program")}
+                            {renderMenuItem(<FaProjectDiagram />, "Curricula", "/curricula")}
+                            {renderMenuItem(<FaBook />, "Courses", "/courses")}
+                            {renderMenuItem(<FaBuilding />, "Building", "/building")}
+                            {renderMenuItem(<FaBuilding />, "Colleges", "/colleges")}
+                            {renderMenuItem(<FaTools />, "Resources", "/resources")}
+                            {renderMenuItem(<FaUserGraduate />, "Tertiary", "/tertiary")}
+                            {renderMenuItem(<FaSitemap />, "Departments", "/department")}
+                            {renderMenuItem(<FaSitemap />, "Academic Year", "/academicyear")}
+                            {renderMenuItem(<FaSitemap />, "Academic Term", "/academicterm")}
 
-                            <div className='pt-6 font-semibold text-gray-500 tracking-wide'>
+                            {/* ENROLLMENT */}
+                            <div className='text-xs font-semibold text-gray-400 tracking-wide mt-6 mb-2'>
                                 ENROLLMENT
                             </div>
 
-                            <div className='w-full'>
-                                <div className={menuItem}><FaCalendarAlt /> <span>Schedules</span></div>
-                                <div className={menuItem}><FaUsers /> <span>Tertiary Enrollees</span></div>
-                            </div>
+                            {renderMenuItem(<FaCalendarAlt />, "Schedules", "/schedules")}
+                            {renderMenuItem(<FaUsers />, "Tertiary Enrollees", "/enrollees")}
 
-                            <div className='pt-6 font-semibold text-gray-500 tracking-wide'>
+                            {/* ACCOUNT */}
+                            <div className='text-xs font-semibold text-gray-400 tracking-wide mt-6 mb-2'>
                                 ACCOUNT
                             </div>
 
-                            <div className='w-full'>
-                                <div className={menuItem}><FaUserCog /> <span>Users</span></div>
-                                <div className={menuItem}><FaIdBadge /> <span>Personnels</span></div>
-                            </div>
+                            {renderMenuItem(<FaUserCog />, "Users", "/users")}
+                            {renderMenuItem(<FaIdBadge />, "Personnels", "/personnels")}
 
                         </div>
                     </div>
                 </div>
 
-                {/* Main Content — fixed */}
+                {/* MAIN CONTENT */}
                 <div className='flex-1 h-full overflow-hidden'>
                     <div className='w-full h-[50px] fixed bg-white border-b border-gray-200 shadow-sm z-10'></div>
-                    {children}
+
+                    <div className='h-full overflow-y-auto'>
+                        {children}
+                    </div>
                 </div>
 
             </div>

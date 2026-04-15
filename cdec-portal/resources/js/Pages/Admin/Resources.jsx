@@ -4,7 +4,7 @@ import { FiRefreshCw } from 'react-icons/fi';
 import AdminLayout from '../Layouts/AdminLayout';
 import ModalResources from '../Modal/ModalResources';
 
-export default function Resources() {
+export default function Resources({ buildings }) {
     const [searchQuery, setSearchQuery] = useState('');
     const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -14,16 +14,7 @@ export default function Resources() {
                 {/* HEADER */}
                 <div className="pt-[3%] bg-white p-6">
                     
-                    {/* BREADCRUMBS */}
-                    <div className="flex items-center gap-2 text-sm py-2">
-                        <span className="font-bold text-gray-400">Admin</span>
-                        <span>/</span>
-                        <span className="font-bold text-gray-400">Manage</span>
-                        <span>/</span>
-                        <span className="font-bold text-gray-400">CDEC</span>
-                        <span>/</span>
-                        <span className="font-bold text-orange-500">Rooms</span>
-                    </div>
+
 
                     {/* TITLE + ACTIONS */}
                     <div className="flex justify-between items-end mt-2">
@@ -74,7 +65,10 @@ export default function Resources() {
 
             {/* MODAL */}
             {isModalOpen && (
-                <ModalResources setIsModalOpen={setIsModalOpen} />
+                <ModalResources 
+                    setIsModalOpen={setIsModalOpen} 
+                    buildings={buildings}
+                />
             )}
         </AdminLayout>
     );

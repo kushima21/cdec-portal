@@ -10,7 +10,7 @@ class Curriculla extends Model
 {
     // Tell Eloquent to use the correct table
     protected $table = 'curricula'; 
-
+    protected $primaryKey = 'curricula_id'; // 🔥 FIX HERE
     protected $fillable = [
         'program_id', 'course_id', 'academic_year', 'academic_period',
         'academic_level', 'course_type', 'pre_requisites'

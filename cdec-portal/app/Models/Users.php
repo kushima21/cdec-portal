@@ -26,9 +26,15 @@ class Users extends Model
         'emergency_fullname',
         'emergency_address',
         'emergency_number',
+        'status',
     ];
 
     protected $casts = [
         'roles' => 'array', // json → array
     ];
+
+    public function getFullNameAttribute()
+{
+    return "{$this->firstname} {$this->lastname}";
+}
 }

@@ -74,6 +74,8 @@ export default function ModalUser({ isModalOpen, setIsModalOpen, selectedUser })
         "Department Administrator", "Program Administrator", "Account Editor",
         "Resources Administrator", "Building Administrator", "College Registrar",
         "Club Moderator", "Office Administrator", "Enrollment Schedules Manager",
+        "Tertiary Student",
+        
     ];
 
     const handleSelectRole = (e) => {
@@ -101,7 +103,7 @@ export default function ModalUser({ isModalOpen, setIsModalOpen, selectedUser })
                             <div className="w-full flex items-center justify-between border-b pb-4">
                                 <div>
                                     <h3 className="text-2xl font-bold text-gray-800 tracking-tight">
-                                        {selectedUser ? 'Edit User' : 'Add New User'}
+                                        {selectedUser ? 'Edit User' : 'Create New User'}
                                     </h3>
                                     <p>Lorem ipsum dolor sit amet consectetur adipisicing elit.</p>
                                 </div>
@@ -251,10 +253,13 @@ export default function ModalUser({ isModalOpen, setIsModalOpen, selectedUser })
                                     <h3 className="text-xl">Personal Information</h3>
                                     <div className="w-full flex flex-row gap-12 p-4">
                                         <div className="flex-1 flex flex-col gap-4">
+                                            <label className="mb-1 text-sm font-medium">Birthdate</label>
                                             <input type="date" name="birthdate" className="border rounded-md p-2 w-full" defaultValue={selectedUser?.birthdate || ''} />
+                                            <label className="mb-1 text-sm font-medium">Contact Number</label>
                                             <input type="number" name="contact_number" className="border rounded-md p-2 w-full" defaultValue={selectedUser?.contact_number || ''} />
                                         </div>
                                         <div className="flex-1 flex flex-col gap-4">
+                                            <label className="mb-1 text-sm font-medium">Gender</label>
                                             <select name="sex" className="border rounded-md p-2 w-full" defaultValue={selectedUser?.sex || ''}>
                                                 <option></option>
                                                 <option>MALE</option>
@@ -269,10 +274,13 @@ export default function ModalUser({ isModalOpen, setIsModalOpen, selectedUser })
                                     <h3 className="text-xl">Emergency Information</h3>
                                     <div className="w-full flex flex-row gap-12 p-4">
                                         <div className="flex-1 flex flex-col gap-4">
+                                            <label className="mb-1 text-sm font-medium">Fullname</label>
                                             <input type="text" name="fullname" className="border rounded-md p-2 w-full" defaultValue={selectedUser?.fullname || ''} />
+                                            <label className="mb-1 text-sm font-medium">Address</label>
                                             <input type="text" name="address" className="border rounded-md p-2 w-full" defaultValue={selectedUser?.address || ''} />
                                         </div>
                                         <div className="flex-1 flex flex-col gap-4">
+                                            <label className="mb-1 text-sm font-medium">Emergency Number</label>
                                             <input type="number" name="emergency_number" className="border rounded-md p-2 w-full" defaultValue={selectedUser?.emergency_number || ''} />
                                         </div>
                                     </div>

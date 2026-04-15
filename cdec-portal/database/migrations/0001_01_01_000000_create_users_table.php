@@ -31,6 +31,9 @@ public function up(): void
         $table->string('emergency_address')->nullable();
         $table->string('emergency_number')->nullable();
 
+        $table->string('status')->nullable();
+
+
         $table->timestamps();
     });
 }

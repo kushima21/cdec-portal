@@ -81,6 +81,9 @@ public function store(Request $request)
         'emergency_fullname' => $request->fullname,
         'emergency_address' => $request->address,
         'emergency_number' => $request->emergency_number,
+
+            // ✅ ADD THIS
+    'status' => 'Active',
     ]);
 
     return redirect()->route('users')->with('success', 'User created successfully');

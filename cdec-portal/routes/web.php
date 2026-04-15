@@ -10,6 +10,11 @@ use App\Http\Controllers\CollegeController;
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\CurriculaController;
 use App\Http\Controllers\BuildingController;
+use App\Http\Controllers\ResourcesController;
+use App\Http\Controllers\ScheduleController;
+use App\Http\Controllers\AcademicTermController;
+use App\Http\Controllers\Auth\RegisteredUserController;
+
 /*
 |--------------------------------------------------------------------------
 | Public Routes
@@ -32,9 +37,12 @@ Route::get('/contact_us', fn () => Inertia::render('contact_us'))->name('contact
 | Auth Pages
 |--------------------------------------------------------------------------
 */
-Route::get('/login', fn () => Inertia::render('Auth.login'))->name('Auth.login');
-Route::get('/register', fn () => Inertia::render('Auth.register'))->name('Auth.register');
+Route::get('/register', [RegisteredUserController::class, 'create'])->name('register');
+Route::post('/register', [RegisteredUserController::class, 'store']);
 
+// LOGIN
+Route::get('/login', fn () => Inertia::render('Auth/Login'))->name('login.form');
+Route::post('/login', [RegisteredUserController::class, 'login'])->name('login');
 /*
 |--------------------------------------------------------------------------
 | Admin Layout & Pages
@@ -71,7 +79,8 @@ Route::post('/users/update/{id}', [UserController::class, 'update'])->name('user
 | Modal & Test Pages
 |--------------------------------------------------------------------------
 */
-Route::get('/modal', fn () => Inertia::render('Modal/ModalResources'))->name('modal');
+Route::get('/modal', fn () => Inertia::render('Modal/ModalAcademicTerm'))->name('modal');
+Route::get('/schedule', fn () => Inertia::render('Admin/Schedule'))->name('schedule');
 Route::get('/studentregister', fn () => Inertia::render('Register/StudentRegister'))->name('studentregister');
 /*
  Building
@@ -79,7 +88,9 @@ Route::get('/studentregister', fn () => Inertia::render('Register/StudentRegiste
 
 /*Resource routes for building*/
 
-Route::get('/resources', fn () => Inertia::render('Admin/Resources'))->name('resources');
+
+Route::get('/resources', [ResourcesController::class, 'index'])->name('resources');
+Route::post('/resources/store', [ResourcesController::class, 'store'])->name('resources.store');
 
 /*close*/
 
@@ -91,10 +102,30 @@ Route::post('/building/store', [BuildingController::class, 'store'])->name('buil
 | Authenticated Routes
 |--------------------------------------------------------------------------
 */
-Route::middleware('auth')->group(function () {
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-});
 
-require __DIR__.'/auth.php';
+
+
+Route::get('/schedule', [ScheduleController::class, 'index'])->name('schedule.index');
+Route::post('/schedule/store', [ScheduleController::class, 'store'])
+    ->name('schedule.store');
+    
+Route::get('/academicterm', [AcademicTermController::class, 'index'])->name('academicterm');
+Route::post('/academic-term/store', [AcademicTermController::class, 'store']);
+
+Route::get('/dashboard', function () {
+    if (!session()->has('user_id')) {
+        return redirect()->route('login.form');
+    }
+
+    return Inertia::render('Admin/Dashboard', [
+        'auth' => [
+            'user' => [
+                'id' => session('user_id'),
+                'name' => session('user_name'),
+                'email' => session('user_email'),
+                'role' => session('role'),
+            ]
+        ]
+    ]);
+})->name('dashboard');
+

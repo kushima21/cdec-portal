@@ -2,6 +2,16 @@
 import { Head, Link, useForm } from '@inertiajs/react';
 
 export default function Login() {
+    const { data, setData, post, processing, errors } = useForm({
+    email: '',
+    password: '',
+    remember: false
+});
+
+const submit = (e) => {
+    e.preventDefault();
+    post(route('login'));
+};
     return (
             <>
                 <div className='w-full min-h-screen bg-white'>
@@ -27,15 +37,18 @@ export default function Login() {
     </Link>
                             </p>
 
-                            <form method='POST' className='w-full max-w-md space-y-6'>
+<form onSubmit={submit} className='w-full max-w-md space-y-6'>
                                 {/* Email */}
                                 <div className='flex flex-col gap-2'>
                                     <label className='font-semibold'>Email</label>
-                                    <input 
-                                        type='text'
-                                        className='w-full h-[45px] px-4 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-orange-400'
-                                        placeholder='Enter your email'
-                                    />
+<input 
+    type='text'
+    value={data.email}
+    onChange={e => setData('email', e.target.value)}
+    className='w-full h-[45px] px-4 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-orange-400'
+    placeholder='Enter your email'
+/>
+{errors.email && <p className="text-red-500 text-sm">{errors.email}</p>}
                                 </div>
 
                                 {/* Password */}
@@ -43,29 +56,36 @@ export default function Login() {
                                     <label className='font-semibold'>Password</label>
                                     <input 
                                         type='password'
+                                        value={data.password}
+                                        onChange={e => setData('password', e.target.value)}
                                         className='w-full h-[45px] px-4 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-orange-400'
                                         placeholder='Enter your password'
                                     />
-                                </div>
+                                    {errors.password && <p className="text-red-500 text-sm">{errors.password}</p>}
+                                                                    </div>
 
-                                {/* Remember & Forgot */}
-                                <div className='flex items-center justify-between text-sm'>
-                                    <label className='flex items-center gap-2 cursor-pointer'>
-                                        <input type='checkbox' />
-                                        Remember me
-                                    </label>
-                                    <p className='text-orange-600 cursor-pointer hover:underline'>
-                                        Forgot Password
-                                    </p>
-                                </div>
+                                                                    {/* Remember & Forgot */}
+                                                                    <div className='flex items-center justify-between text-sm'>
+                                                                        <label className='flex items-center gap-2 cursor-pointer'>
+                                    <input 
+                                        type='checkbox'
+                                        checked={data.remember}
+                                        onChange={e => setData('remember', e.target.checked)}
+                                    />
+                                                                        </label>
+                                                                        <p className='text-orange-600 cursor-pointer hover:underline'>
+                                                                            Forgot Password
+                                                                        </p>
+                                                                    </div>
 
-                                {/* Buttons */}
-                                <div className='flex flex-col gap-4 pt-2'>
+                                                                    {/* Buttons */}
+                                                                    <div className='flex flex-col gap-4 pt-2'>
                                     <button 
                                         type='submit'
+                                        disabled={processing}
                                         className='w-full h-[45px] bg-gradient-to-r from-orange-400 to-orange-600 text-white font-bold rounded-md shadow-md hover:scale-[1.02] transition'
                                     >
-                                        Sign in Now
+                                        {processing ? 'Signing in...' : 'Sign in Now'}
                                     </button>
 
                                     <div className='text-center text-gray-500 text-sm'>or continue with</div>
