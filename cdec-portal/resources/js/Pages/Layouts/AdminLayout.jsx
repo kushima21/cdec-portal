@@ -76,9 +76,9 @@ const auth = props.auth;
                         {open && (
                             <div className='absolute top-16 left-0 w-full bg-white rounded-xl shadow-2xl p-4 z-50'>
                                 <div className='flex flex-col gap-3 text-sm'>
-<span className='text-gray-500 text-center'>
-    {auth?.user?.email}
-</span>
+                                <span className='text-gray-500 text-center'>
+                                    {auth?.user?.email}
+                                </span>
 
                                     <div className='p-2 rounded-md hover:bg-gray-100 cursor-pointer'>
                                         Settings
@@ -133,7 +133,7 @@ const auth = props.auth;
                                 ENROLLMENT
                             </div>
 
-                            {renderMenuItem(<FaCalendarAlt />, "Schedules", "/schedules")}
+                            {renderMenuItem(<FaCalendarAlt />, "Schedules", "/schedule")}
                             {renderMenuItem(<FaUsers />, "Tertiary Enrollees", "/enrollees")}
 
                             {/* ACCOUNT */}

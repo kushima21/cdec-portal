@@ -32,10 +32,17 @@ export default function StudentRegister() {
     const nextStep = () => setStep(prev => prev + 1);
     const prevStep = () => setStep(prev => prev - 1);
 
-    const handleSubmit = () => {
-        router.post('/student/register', form);
-        setStep(5);
-    };
+const handleSubmit = () => {
+    router.post('/student/register', form, {
+        onSuccess: () => {
+            setStep(5);
+
+            setTimeout(() => {
+                router.visit('/preenroll');
+            }, 1500);
+        }
+    });
+};
 
     const stepText = [
         "Personal Information",
@@ -71,9 +78,9 @@ export default function StudentRegister() {
                         </div>
 
                         <div className='grid md:grid-cols-3 gap-4'>
-<input name="first_name" value={form.first_name} onChange={handleChange}  />
-<input name="middle_name" value={form.middle_name} onChange={handleChange}  />
-<input name="last_name" value={form.last_name} onChange={handleChange}  />
+                            <input name="first_name" value={form.first_name}  onChange={handleChange} placeholder="First Name" className={inputStyle}  />
+                            <input name="middle_name" value={form.middle_name} onChange={handleChange} placeholder="Middle Name" className={inputStyle} />
+                            <input name="last_name" value={form.last_name} onChange={handleChange} placeholder="Last Name" className={inputStyle} />
                         </div>
 
                         <div className='grid md:grid-cols-2 gap-4'>

@@ -32,6 +32,7 @@ class ProgramController extends Controller
             return [
                 'id' => $curr->id,
                 'program_id' => $curr->program_id,
+                'course_code' => $curr->course->course_code ?? 'N/A',
                 'course_no' => $curr->course->course_no ?? 'N/A',
                 'course' => $curr->course->descriptive_title ?? 'N/A',
                 'lecture_units' => $curr->course->lecture_units ?? 0,

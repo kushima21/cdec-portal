@@ -13,11 +13,14 @@ const handleSubmit = (e) => {
 
     const formData = new FormData(e.target);
 
-    // Ensure total_units is always correct
-    formData.set('total_units', total);
+    const lecture = Number(formData.get('lecture_units') || 0);
+    const lab = Number(formData.get('lab_units') || 0);
+
+    formData.set('total_units', lecture + lab);
 
     router.post(route('courses.store'), formData, {
         onSuccess: () => setIsModalOpen(false),
+        onError: (errors) => console.log(errors),
     });
 };
 
@@ -59,12 +62,20 @@ const handleSubmit = (e) => {
                             
                             {/* LEFT */}
                             <div className="flex-1 flex flex-col gap-2">
+
+                                <label className="text-lg font-medium">Course Code</label>
+                                <input 
+                                    type="text" 
+                                    name="course_code" 
+                                    placeholder="CS101" 
+                                    className="border rounded-md p-2 w-full" 
+                                />
                                 
                                 <label className="text-lg font-medium">Course No</label>
                                 <input 
-                                    type="text" 
+                                    type="number" 
                                     name="course_no" 
-                                    placeholder="CS101" 
+                                    placeholder="1" 
                                     className="border rounded-md p-2 w-full" 
                                 />
 

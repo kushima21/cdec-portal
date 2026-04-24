@@ -98,7 +98,7 @@ export default function Courses({ courses: initialCourses, search: initialSearch
                                         <td className='p-4'>
                                             <input type='checkbox' className='w-4 h-4 rounded border-gray-300 text-orange-600 focus:ring-orange-500' />
                                         </td>
-                                        <td className='p-4 font-bold text-gray-700'>{course.course_no}</td>
+                                        <td className='p-4 font-bold text-gray-700'>{course.course_code} - {course.course_no}</td>
                                         <td className='p-4 text-gray-600 font-medium'>{course.descriptive_title}</td>
                                         <td className='p-4 text-center text-gray-500'>{course.lecture_units}</td>
                                         <td className='p-4 text-center text-gray-500'>{course.lab_units}</td>

@@ -14,6 +14,7 @@ use App\Http\Controllers\ResourcesController;
 use App\Http\Controllers\ScheduleController;
 use App\Http\Controllers\AcademicTermController;
 use App\Http\Controllers\Auth\RegisteredUserController;
+use App\Http\Controllers\TertiaryController;
 
 /*
 |--------------------------------------------------------------------------
@@ -80,7 +81,7 @@ Route::post('/users/update/{id}', [UserController::class, 'update'])->name('user
 |--------------------------------------------------------------------------
 */
 Route::get('/modal', fn () => Inertia::render('Modal/ModalAcademicTerm'))->name('modal');
-Route::get('/schedule', fn () => Inertia::render('Admin/Schedule'))->name('schedule');
+Route::get('/preenroll', fn () => Inertia::render('Register/PreEnroll'))->name('preenroll');
 Route::get('/studentregister', fn () => Inertia::render('Register/StudentRegister'))->name('studentregister');
 /*
  Building
@@ -129,3 +130,4 @@ Route::get('/dashboard', function () {
     ]);
 })->name('dashboard');
 
+Route::post('/student/register', [TertiaryController::class, 'store']);

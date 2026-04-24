@@ -25,26 +25,23 @@ class Schedules extends Model
     ];
 
     // Curriculum
-    public function curricula()
-    {
-        return $this->belongsTo(Curriculla::class, 'curricula_id', 'curricula_id');
-    }
+public function curricula()
+{
+    return $this->belongsTo(Curriculla::class, 'curricula_id');
+}
 
-    // Instructor
-    public function instructor()
-    {
-        return $this->belongsTo(Users::class, 'instructor_id', 'id');
-    }
+public function instructor()
+{
+    return $this->belongsTo(Users::class, 'instructor_id');
+}
 
-    // Room
-    public function resource()
-    {
-        return $this->belongsTo(Resources::class, 'room_id', 'resources_id');
-    }
+public function resource()
+{
+    return $this->belongsTo(Resources::class, 'room_id');
+}
 
-    // 🔥 ADD THIS (VERY IMPORTANT)
-    public function academic()
-    {
-        return $this->belongsTo(AcademicTerm::class, 'academic_id', 'academic_id');
-    }
+public function academic()
+{
+    return $this->belongsTo(AcademicTerm::class, 'academic_id');
+}
 }

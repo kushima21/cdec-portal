@@ -203,7 +203,9 @@ export default function Program({ programs, curricula, users = [], colleges = []
                 {filteredCourses.map(course => (
                   <tr key={course.id} className="group hover:bg-orange-50/40 transition text-sm">
                     <td className="p-4"><input type="checkbox" className="w-4 h-4" /></td>
-                    <td className="p-4 font-bold text-gray-700">{course.course_no}</td>
+  <td className="p-4 font-bold text-gray-700">
+    {course.course_code} - {course.course_no}
+  </td>
                     <td className="p-4 text-gray-600 font-medium">{course.course}</td>
                     <td className="p-4 text-center text-gray-500">{course.lecture_units}</td>
                     <td className="p-4 text-center text-gray-500">{course.lab_units}</td>

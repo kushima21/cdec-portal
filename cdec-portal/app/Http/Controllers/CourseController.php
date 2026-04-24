@@ -16,7 +16,7 @@ class CourseController extends Controller
 
         $courses = Course::query()
             ->when($search, fn($q) => $q->where('descriptive_title', 'like', "%{$search}%")
-                                        ->orWhere('course_no', 'like', "%{$search}%"))
+                                        ->orWhere('course_code', 'like', "%{$search}%"))
             ->orderBy('created_at', 'desc')
             ->get();
 
@@ -29,25 +29,24 @@ class CourseController extends Controller
 
 public function store(Request $request)
 {
-    $request->validate([
-        'course_no' => 'required|string|max:50|unique:courses,course_no',
+    $validated = $request->validate([
+        'course_code' => 'required|string|max:255',
+        'course_no' => 'nullable|integer|min:0',
         'descriptive_title' => 'required|string|max:255',
         'lecture_units' => 'nullable|integer|min:0',
         'lab_units' => 'nullable|integer|min:0',
     ]);
 
-    // Default null values to 0
-    $lecture_units = $request->lecture_units ?? 0;
-    $lab_units = $request->lab_units ?? 0;
-
-    $total_units = $lecture_units + $lab_units;
+    $lecture = $validated['lecture_units'] ?? 0;
+    $lab = $validated['lab_units'] ?? 0;
 
     Course::create([
-        'course_no' => $request->course_no,
-        'descriptive_title' => $request->descriptive_title,
-        'lecture_units' => $lecture_units,
-        'lab_units' => $lab_units,
-        'total_units' => $total_units,
+        'course_code' => $validated['course_code'],
+        'course_no' => $validated['course_no'] ?? null,
+        'descriptive_title' => $validated['descriptive_title'],
+        'lecture_units' => $lecture,
+        'lab_units' => $lab,
+        'total_units' => $lecture + $lab,
     ]);
 
     return redirect()->back()->with('success', 'Course created successfully!');
@@ -58,6 +57,8 @@ public function curricula()
     $courses = Course::all()->map(function ($course) {
         return [
             'course_id' => $course->id,
+            'course_code' => $course->course_code,
+
             'course_no' => $course->course_no,
             'descriptive_title' => $course->descriptive_title,
             'lecture_units' => $course->lecture_units,

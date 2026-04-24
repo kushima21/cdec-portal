@@ -18,103 +18,50 @@ use App\Models\AcademicTerm;
 class ScheduleController extends Controller
 {
     // ================= INDEX =================
-public function index()
-{
-    $curriculla = Curriculla::join('courses', 'curricula.course_id', '=', 'courses.course_id')
-        ->get()
-        ->map(function ($item) {
+
+    public function index(){
+
+        $schedules = Schedules::all();
+        // 🔹 Get all curricula WITH course info
+                // 🔹 Get all users for Program Head selection
+        $users = Users::all()->map(function ($user) {
             return [
-                'curricula_id' => $item->curricula_id,
-                'course_no' => $item->course_no,
-                'descriptive_title' => $item->descriptive_title,
-                'academic_year' => $item->academic_year,
-                'total_units' => $item->total_units,
+                'id' => $user->id,
+                'firstname' => $user->firstname,
+                'lastname' => $user->lastname,
+                'fullname' => $user->firstname . ' ' . $user->lastname,
             ];
         });
 
-    $courses = Course::all()->map(function ($course) {
-        return [
-            'id' => $course->course_id,
-            'course_no' => $course->course_no,
-            'descriptive_title' => $course->descriptive_title,
-            'total_units' => $course->total_units ?? 0,
-        ];
-    });
+        $curricula = Curriculla::with('course')->get()->map(function ($curr) {
+            return [
+                'id' => $curr->id,
+                'program_id' => $curr->program_id,
+                'course_code' => $curr->course->course_code ?? 'N/A',
+                'course_no' => $curr->course->course_no ?? 'N/A',
+                'course' => $curr->course->descriptive_title ?? 'N/A',
+                'lecture_units' => $curr->course->lecture_units ?? 0,
+                'lab_units' => $curr->course->lab_units ?? 0,
+                'total_units' => $curr->course->total_units ?? 0,
+                'level' => $curr->academic_level,
+                'academic_year' => $curr->academic_year,
+            ];
+        });
 
-    $resources = Resources::all()->map(function ($resource) {
-        return [
-            'resources_id' => $resource->resources_id,
-            'room_name' => $resource->room_name,
-        ];
-    });
+                // 🔹 Get all curricula WITH course info
+         $resources = Resources::all()->map(function ($resources) {
+            return [
+                'resources_id' => $resources->id,
+                'room_name' => $resources->room_name,
+                'glossary' => $resources->glossary,
+                'bulding_id' => $resources->building_id,
+                'floor' => $resources->floor,
+                'capacity' => $resources->capacity,
+                
+            ];
+        });
 
-    $users = Users::all()->map(function ($user) {
-        return [
-            'id' => $user->id,
-            'firstname' => $user->firstname,
-            'lastname' => $user->lastname,
-            'email' => $user->email,
-            'profile_picture' => $user->profile_picture,
-            'status' => $user->status,
-            'full_name' => $user->firstname . ' ' . $user->lastname,
-        ];
-    });
-
-    $schedules = Schedules::with([
-        'curricula.course',
-        'instructor',
-        'resource',
-        'academic'
-    ])
-    ->get()
-    ->map(function ($s) {
-
-        return [
-            'id' => $s->schedule_id,
-
-            // ✅ COURSE (SAFE + COMPLETE)
-            'course' => [
-                'course_no' => $s->curricula->course->course_no ?? 'N/A',
-                'descriptive_title' => $s->curricula->course->descriptive_title ?? 'N/A',
-                'total_units' => $s->curricula->course->total_units ?? 0,
-            ],
-
-            // TIME
-            'time' => date('h:ia', strtotime($s->start_time)) . ' - ' . date('h:ia', strtotime($s->end_time)),
-
-            // DAYS
-            'days' => $s->days,
-
-            // DURATION
-            'duration' => $s->duration,
-
-            // ACADEMIC
-            'availability' => $s->academic->academic_year ?? 'N/A',
-
-            // SLOTS
-            'slots' => "1 / {$s->available_slot}",
-
-            // ROOM
-            'room' => $s->resource->room_name ?? 'TBA',
-
-            // INSTRUCTOR
-            'instructor' => [
-                'name' => ($s->instructor->firstname ?? '') . ' ' . ($s->instructor->lastname ?? ''),
-                'email' => $s->instructor->email ?? '',
-                'avatar' => $s->instructor->profile_picture ?? null,
-            ]
-        ];
-    });
-
-    return Inertia::render('Admin/Schedule', [
-        'curriculla' => $curriculla,
-        'courses' => $courses,
-        'resources' => $resources,
-        'users' => $users,
-        'schedules' => $schedules,
-    ]);
-}
-
+    }
     // ================= STORE =================
 public function store(Request $request)
 {
@@ -130,11 +77,12 @@ public function store(Request $request)
     ]);
 
     // ACTIVE TERM
-    $activeTerm = AcademicTerm::where('academic_status', 'Ongoing')->first();
+$activeTerm = AcademicTerm::where('academic_status', 'Ongoing')->first();
 
-    if (!$activeTerm) {
-        return back()->withErrors(['error' => 'No active academic term found.']);
-    }
+// ✅ FIX: fallback if walay "Ongoing"
+if (!$activeTerm) {
+    $activeTerm = AcademicTerm::first();
+}
 
     // GET CURRICULUM (para course_id + program_id)
     $curriculum = Curriculla::findOrFail($validated['curricula_id']);

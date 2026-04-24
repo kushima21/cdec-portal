@@ -11,18 +11,16 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('courses', function (Blueprint $table) {
-            $table->course_id(); // COURSE ID
-
-            $table->string('course_no')->unique(); // COURSE NO
-            $table->string('descriptive_title'); // DESCRIPTIVE TITLE
-
-            $table->integer('lab_units')->default(0); // LAB UNITS
-            $table->integer('lecture_units')->default(0); // LECTURE UNITS
-            $table->integer('total_units')->default(0); // TOTAL UNITS
-
-            $table->timestamps(); // CREATED AT & UPDATED AT
-        });
+Schema::create('courses', function (Blueprint $table) {
+    $table->id();
+    $table->string('course_code')->nullable();
+   $table->integer('course_no')->nullable();
+    $table->string('descriptive_title');
+    $table->integer('lecture_units')->nullable();
+    $table->integer('lab_units')->nullable();
+    $table->integer('total_units');
+    $table->timestamps();
+});
     }
     /**
      * Reverse the migrations.

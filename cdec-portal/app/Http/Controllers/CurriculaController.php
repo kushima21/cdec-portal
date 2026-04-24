@@ -16,6 +16,7 @@ public function index()
     $courses = Course::all()->map(function ($course) {
         return [
             'course_id' => $course->course_id,
+            'course_code' => $course->course_code,
             'course_no' => $course->course_no,
             'descriptive_title' => $course->descriptive_title,
             'lecture_units' => $course->lecture_units,

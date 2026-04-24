@@ -28,12 +28,13 @@ public function login(Request $request)
         ]);
     }
 
-    session([
-        'user_id' => $user->register_id,
-        'user_name' => $user->firstname . ' ' . $user->lastname,
-        'user_email' => $user->email,
-        'role' => $user->roles
-    ]);
+session([
+    'user_id' => $user->register_id,
+    'user_name' => $user->firstname . ' ' . $user->lastname,
+    'user_email' => $user->email,
+    'username' => $user->username, // ✅ ADD THIS
+    'role' => $user->roles
+]);
 
     return redirect()->route('dashboard');
 }
@@ -45,7 +46,7 @@ public function login(Request $request)
     }
 
     // REGISTER USER
-    public function store(Request $request)
+public function store(Request $request)
 {
     $request->validate([
         'firstname' => 'required|string|max:255',
@@ -54,9 +55,15 @@ public function login(Request $request)
         'password' => ['required', 'confirmed', Rules\Password::defaults()],
     ]);
 
+    // ✅ AUTO GENERATE 6-DIGIT UNIQUE USERNAME
+    do {
+        $username = str_pad(random_int(0, 999999), 6, '0', STR_PAD_LEFT);
+    } while (Register::where('username', $username)->exists());
+
     $user = Register::create([
         'firstname' => $request->firstname,
         'lastname' => $request->lastname,
+        'username' => $username, // ✅ SAVE GENERATED USERNAME
         'email' => $request->email,
         'password' => Hash::make($request->password),
         'status' => 'Active',
@@ -68,10 +75,25 @@ public function login(Request $request)
         'user_id' => $user->register_id,
         'user_name' => $user->firstname . ' ' . $user->lastname,
         'user_email' => $user->email,
+        'username' => $user->username, // optional if you want to use it later
         'role' => $user->roles
     ]);
 
-    // ✅ REDIRECT TO STUDENT REGISTER PAGE
     return redirect()->route('studentregister');
+}
+
+public function share(Request $request): array
+{
+    return array_merge(parent::share($request), [
+        'auth' => [
+            'user' => [
+                'id' => session('user_id'),
+                'name' => session('user_name'),
+                'email' => session('user_email'),
+                'username' => session('username'), // ✅ ADD THIS
+                'role' => session('role'),
+            ],
+        ],
+    ]);
 }
 }
