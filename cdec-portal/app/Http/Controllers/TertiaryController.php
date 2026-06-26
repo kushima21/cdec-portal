@@ -33,8 +33,6 @@ class TertiaryController extends Controller
             'emergency_address' => $request->emergency_address,
             'emergency_number' => $request->emergency_number,
 
-            'previous_school' => $request->previous_school,
-            'school_address' => $request->school_address,
 
             // ✅ gikan sa logged-in user
             'email' => session('user_email'),

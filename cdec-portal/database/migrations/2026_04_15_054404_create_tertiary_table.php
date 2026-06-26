@@ -32,9 +32,6 @@ Schema::create('tertiary', function (Blueprint $table) {
     $table->text('emergency_address')->nullable();
     $table->string('emergency_number')->nullable();
 
-    // Academic
-    $table->string('previous_school')->nullable();
-    $table->text('school_address')->nullable();
 
     // Logged in user info
     $table->string('email');
