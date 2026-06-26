@@ -63,13 +63,13 @@ const auth = props.auth;
                         />
 
                         <div className='flex-1'>
-<h2 className='font-semibold text-sm truncate'>
-    {auth?.user?.name}
-</h2>
+                            <h2 className='font-semibold text-sm truncate'>
+                                {auth?.user?.name}
+                            </h2>
 
-<p className='text-xs text-gray-500 truncate'>
-    {auth?.user?.email}
-</p>
+                            <p className='text-xs text-gray-500 truncate'>
+                                {auth?.user?.email}
+                            </p>
                         </div>
 
                         {/* DROPDOWN */}

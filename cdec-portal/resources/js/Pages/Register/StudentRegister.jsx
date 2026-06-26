@@ -20,9 +20,8 @@ export default function StudentRegister() {
         address: '',
         emergency_fullname: '',
         emergency_address: '',
-        emergency_number: '',
-        previous_school: '',
-        school_address: ''
+        emergency_number: ''
+
     });
 
     const handleChange = (e) => {
@@ -35,7 +34,7 @@ export default function StudentRegister() {
 const handleSubmit = () => {
     router.post('/student/register', form, {
         onSuccess: () => {
-            setStep(5);
+            setStep(4);
 
             setTimeout(() => {
                 router.visit('/preenroll');
@@ -47,7 +46,6 @@ const handleSubmit = () => {
     const stepText = [
         "Personal Information",
         "Emergency Details",
-        "Academic Information",
         "Review & Confirmation",
         "Registration Complete"
     ];
@@ -118,17 +116,9 @@ const handleSubmit = () => {
                     </>
                 );
 
+
+
             case 3:
-                return (
-                    <>
-                        <h2 className='text-xl font-semibold text-gray-700 mb-4'>Academic Information</h2>
-
-                        <input name="previous_school" value={form.previous_school} onChange={handleChange} placeholder="Previous School" className={inputStyle} />
-                        <input name="school_address" value={form.school_address} onChange={handleChange} placeholder="School Address" className={inputStyle} />
-                    </>
-                );
-
-            case 4:
                 return (
                     <>
                         <h2 className='text-xl font-semibold text-gray-700 mb-4'>Review & Confirmation</h2>
@@ -144,7 +134,7 @@ const handleSubmit = () => {
                     </>
                 );
 
-            case 5:
+            case 4:
                 return (
                     <div className='text-center py-10'>
                         <h2 className='text-3xl font-bold text-green-600 mb-2'>🎉 Registration Successful</h2>
@@ -166,17 +156,24 @@ const handleSubmit = () => {
 
                     {/* Stepper */}
                     <div className='flex items-center justify-between mb-6 relative'>
-                        {[1,2,3,4,5].map((num, index) => (
-                            <div key={num} className='flex-1 flex items-center'>
-                                <div className={`w-10 h-10 flex items-center justify-center rounded-full font-semibold z-10
-                                    ${step >= num ? 'bg-orange-500 text-white' : 'bg-gray-300 text-gray-600'}`}>
+                        {[1, 2, 3, 4].map((num, index) => (
+                            <div key={num} className="flex-1 flex items-center">
+                                <div
+                                    className={`w-10 h-10 flex items-center justify-center rounded-full font-semibold z-10 ${
+                                        step >= num
+                                            ? 'bg-orange-500 text-white'
+                                            : 'bg-gray-300 text-gray-600'
+                                    }`}
+                                >
                                     {num}
                                 </div>
 
-                                {index < 4 && (
-                                    <div className={`flex-1 h-1 
-                                        ${step > num ? 'bg-orange-500' : 'bg-gray-300'}`}>
-                                    </div>
+                                {index < 3 && (
+                                    <div
+                                        className={`flex-1 h-1 ${
+                                            step > num ? 'bg-orange-500' : 'bg-gray-300'
+                                        }`}
+                                    />
                                 )}
                             </div>
                         ))}
@@ -187,34 +184,36 @@ const handleSubmit = () => {
                     <form className='space-y-4'>
                         {renderStep()}
 
-                        <div className='flex justify-between mt-6'>
-                            {step > 1 && step < 5 && (
-                                <button
-                                    type="button"
-                                    onClick={prevStep}
-                                    className='px-5 py-2 bg-gray-400 text-white rounded-lg hover:bg-gray-500 transition'>
-                                    Back
-                                </button>
-                            )}
+<div className='flex justify-between mt-6'>
 
-                            {step < 4 && (
-                                <button
-                                    type="button"
-                                    onClick={nextStep}
-                                    className='px-5 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition'>
-                                    Next
-                                </button>
-                            )}
+    {step > 1 && step < 4 && (
+        <button
+            type="button"
+            onClick={prevStep}
+            className='px-5 py-2 bg-gray-400 text-white rounded-lg hover:bg-gray-500 transition'>
+            Back
+        </button>
+    )}
 
-                            {step === 4 && (
-                                <button
-                                    type="button"
-                                    onClick={handleSubmit}
-                                    className='px-5 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition'>
-                                    Submit
-                                </button>
-                            )}
-                        </div>
+    {step < 3 && (
+        <button
+            type="button"
+            onClick={nextStep}
+            className='ml-auto px-5 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition'>
+            Next
+        </button>
+    )}
+
+    {step === 3 && (
+        <button
+            type="button"
+            onClick={handleSubmit}
+            className='ml-auto px-5 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition'>
+            Submit
+        </button>
+    )}
+
+</div>
                     </form>
 
                 </div>

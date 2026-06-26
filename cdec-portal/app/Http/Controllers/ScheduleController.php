@@ -19,50 +19,10 @@ class ScheduleController extends Controller
 {
     // ================= INDEX =================
 
-    public function index(){
 
-        $schedules = Schedules::all();
-        // 🔹 Get all curricula WITH course info
-                // 🔹 Get all users for Program Head selection
-        $users = Users::all()->map(function ($user) {
-            return [
-                'id' => $user->id,
-                'firstname' => $user->firstname,
-                'lastname' => $user->lastname,
-                'fullname' => $user->firstname . ' ' . $user->lastname,
-            ];
-        });
-
-        $curricula = Curriculla::with('course')->get()->map(function ($curr) {
-            return [
-                'id' => $curr->id,
-                'program_id' => $curr->program_id,
-                'course_code' => $curr->course->course_code ?? 'N/A',
-                'course_no' => $curr->course->course_no ?? 'N/A',
-                'course' => $curr->course->descriptive_title ?? 'N/A',
-                'lecture_units' => $curr->course->lecture_units ?? 0,
-                'lab_units' => $curr->course->lab_units ?? 0,
-                'total_units' => $curr->course->total_units ?? 0,
-                'level' => $curr->academic_level,
-                'academic_year' => $curr->academic_year,
-            ];
-        });
-
-                // 🔹 Get all curricula WITH course info
-         $resources = Resources::all()->map(function ($resources) {
-            return [
-                'resources_id' => $resources->id,
-                'room_name' => $resources->room_name,
-                'glossary' => $resources->glossary,
-                'bulding_id' => $resources->building_id,
-                'floor' => $resources->floor,
-                'capacity' => $resources->capacity,
-                
-            ];
-        });
-
-    }
     // ================= STORE =================
+
+    
 public function store(Request $request)
 {
     $validated = $request->validate([
@@ -116,4 +76,5 @@ if (!$activeTerm) {
     return redirect()->route('schedule.index')
         ->with('success', 'Schedule created successfully');
 }
+
 }

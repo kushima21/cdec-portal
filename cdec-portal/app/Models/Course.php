@@ -14,4 +14,6 @@ class Course extends Model
         'lecture_units',
         'total_units',
     ];
+
+    
 }

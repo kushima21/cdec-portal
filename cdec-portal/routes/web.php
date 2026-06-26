@@ -106,7 +106,7 @@ Route::post('/building/store', [BuildingController::class, 'store'])->name('buil
 
 
 
-Route::get('/schedule', [ScheduleController::class, 'index'])->name('schedule.index');
+Route::get('/schedule', fn () => Inertia::render('Admin/Schedule'))->name('schedule');
 Route::post('/schedule/store', [ScheduleController::class, 'store'])
     ->name('schedule.store');
     
