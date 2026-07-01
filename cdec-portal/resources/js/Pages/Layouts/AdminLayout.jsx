@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { 
   FaChalkboardTeacher, FaLayerGroup, FaProjectDiagram, FaBook,
   FaBuilding, FaTools, FaUserGraduate, FaSitemap,
@@ -8,6 +8,27 @@ import {
 import { Link, usePage } from '@inertiajs/react';
 
 export default function AdminLayout({ children }) {
+
+    const [open, setOpen] = useState(false);
+const dropdownRef = useRef(null);
+
+useEffect(() => {
+    function handleClickOutside(event) {
+        if (
+            dropdownRef.current &&
+            !dropdownRef.current.contains(event.target)
+        ) {
+            setOpen(false);
+        }
+    }
+
+    document.addEventListener('mousedown', handleClickOutside);
+
+    return () => {
+        document.removeEventListener('mousedown', handleClickOutside);
+    };
+}, []);
+
   const { url, props } = usePage();
 const auth = props.auth;
 
@@ -127,6 +148,14 @@ const auth = props.auth;
                             {renderMenuItem(<FaSitemap />, "Departments", "/department")}
                             {renderMenuItem(<FaSitemap />, "Academic Year", "/academicyear")}
                             {renderMenuItem(<FaSitemap />, "Academic Term", "/academicterm")}
+                            
+                            {/*Admission*/}
+                            <div className='text-xs font-semibold text-gray-400 tracking-wide mt-6 mb-2'>
+                                ADMISSION
+                            </div>
+
+                            {renderMenuItem(<FaSitemap />, "Application", "/application")}
+
 
                             {/* ENROLLMENT */}
                             <div className='text-xs font-semibold text-gray-400 tracking-wide mt-6 mb-2'>
