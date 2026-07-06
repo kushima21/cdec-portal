@@ -17,12 +17,13 @@ class Users extends Model
         'academic_suffix',
         'roles',
         'email',
-        'username',
+        'school_id',
         'password',
         'profile_picture',
         'birthdate',
         'contact_number',
         'sex',
+        'address',
         'emergency_fullname',
         'emergency_address',
         'emergency_number',
@@ -30,11 +31,11 @@ class Users extends Model
     ];
 
     protected $casts = [
-        'roles' => 'array', // json → array
+        'roles' => 'array',
     ];
 
     public function getFullNameAttribute()
-{
-    return "{$this->firstname} {$this->lastname}";
-}
+    {
+        return "{$this->firstname} {$this->lastname}";
+    }
 }

@@ -37,7 +37,7 @@ const handleSubmit = () => {
             setStep(4);
 
             setTimeout(() => {
-                router.visit('/preenroll');
+                router.visit('/dashboard');
             }, 1500);
         }
     });

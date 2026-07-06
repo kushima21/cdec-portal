@@ -1,215 +1,221 @@
 import { useState } from 'react';
 import { router } from '@inertiajs/react';
-import { FaTimes } from 'react-icons/fa';
+import { FaTimes, FaCalendarAlt, FaCheck } from 'react-icons/fa';
 
 export default function ModalSchedule({ setIsModalOpen, users, curriculla, resources }) {
-
-    // ================= STATES =================
+    // ================= VISIBILITY CONTROLS =================
     const [showCurriculum, setShowCurriculum] = useState(false);
     const [showRoom, setShowRoom] = useState(false);
     const [showUser, setShowUser] = useState(false);
     const [showDays, setShowDays] = useState(false);
     const [showDuration, setShowDuration] = useState(false);
 
+    // ================= FORM DATA STATES =================
     const [startTime, setStartTime] = useState('');
     const [endTime, setEndTime] = useState('');
     const [availableSlot, setAvailableSlot] = useState('');
-
     const [searchCurriculum, setSearchCurriculum] = useState('');
     const [searchUser, setSearchUser] = useState('');
-
     const [selectedDays, setSelectedDays] = useState([]);
     const [selectedDuration, setSelectedDuration] = useState('');
 
-    // ================= IDS + LABELS =================
+    // ================= ASSIGNED DATA IDENTIFIERS =================
     const [selectedCurriculumId, setSelectedCurriculumId] = useState('');
     const [selectedCurriculumLabel, setSelectedCurriculumLabel] = useState('');
-
     const [selectedRoomId, setSelectedRoomId] = useState('');
     const [selectedRoomLabel, setSelectedRoomLabel] = useState('');
-
     const [selectedUserId, setSelectedUserId] = useState('');
     const [selectedUserLabel, setSelectedUserLabel] = useState('');
 
+    // ================= FEEDBACK AND DATA LOOKUPS =================
+    const [errors, setErrors] = useState({});
+    
     const daysList = [
-        "Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"
+        "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"
     ];
 
-const submitHandler = (e) => {
-    e.preventDefault();
-
-    router.post('/schedule/store', {
-        curricula_id: selectedCurriculumId,
-        room_id: selectedRoomId,
-        instructor_id: selectedUserId,
-        days: selectedDays,
-        start_time: startTime,
-        end_time: endTime,
-        duration: selectedDuration,
-        available_slot: availableSlot,
-    }, {
-        onSuccess: () => {
-            // ✅ AUTO CLOSE MODAL
-            setIsModalOpen(false);
-
-            // (optional) reset form
-            setSelectedCurriculumId('');
-            setSelectedCurriculumLabel('');
-            setSelectedRoomId('');
-            setSelectedRoomLabel('');
-            setSelectedUserId('');
-            setSelectedUserLabel('');
-            setSelectedDays([]);
-            setStartTime('');
-            setEndTime('');
-            setSelectedDuration('');
-            setAvailableSlot('');
-            setSearchCurriculum('');
-            setSearchUser('');
+    const toggleDaySelection = (day) => {
+        if (selectedDays.includes(day)) {
+            setSelectedDays(selectedDays.filter(d => d !== day));
+        } else {
+            setSelectedDays([...selectedDays, day]);
         }
-    });
-};
+        setErrors(prev => ({ ...prev, days: null }));
+    };
+
+    const submitHandler = (e) => {
+        e.preventDefault();
+        setErrors({});
+
+        router.post('/schedule/store', {
+            curricula_id: selectedCurriculumId,
+            room_id: selectedRoomId,
+            instructor_id: selectedUserId,
+            days: selectedDays,
+            start_time: startTime,
+            end_time: endTime,
+            duration: selectedDuration,
+            available_slot: availableSlot,
+        }, {
+            onSuccess: () => {
+                setIsModalOpen(false);
+                // Reset State Mapping
+                setSelectedCurriculumId('');
+                setSelectedCurriculumLabel('');
+                setSelectedRoomId('');
+                setSelectedRoomLabel('');
+                setSelectedUserId('');
+                setSelectedUserLabel('');
+                setSelectedDays([]);
+                setStartTime('');
+                setEndTime('');
+                setSelectedDuration('');
+                setAvailableSlot('');
+                setSearchCurriculum('');
+                setSearchUser('');
+            },
+            onError: (err) => setErrors(err)
+        });
+    };
+
+    // Shared Tailwind UI Classes
+    const labelStyle = "text-xs font-semibold uppercase tracking-wider text-gray-600 block mb-1";
+    const inputStyle = "w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 transition-all focus:border-blue-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 cursor-pointer";
+    const textInputStyle = "w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 transition-all focus:border-blue-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20";
+    const dropdownContainerStyle = "absolute z-20 mt-1 w-full rounded-xl border border-gray-200 bg-white shadow-xl max-h-48 overflow-y-auto py-1";
+    const errorStyle = "text-xs font-medium text-red-600 mt-1";
 
     return (
-        <div className="w-full h-screen bg-gray-500/50 fixed inset-0 z-50">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-gray-900/60 p-4 backdrop-blur-sm transition-all">
+            {/* BACKDROP CLOSURE INTERCEPTOR */}
+            <div className="fixed inset-0" onClick={() => setIsModalOpen(false)} />
 
-            {/* OUTSIDE CLICK */}
-            <div
-                onClick={() => setIsModalOpen(false)}
-                className="w-full h-full flex justify-center items-center overflow-y-auto pt-10 pb-8"
-            >
-
-                {/* MODAL */}
-                <div
-                    onClick={(e) => e.stopPropagation()}
-                    className="w-[50%] bg-white rounded-xl shadow-4xl p-5 flex flex-col"
-                >
-
-                    {/* HEADER */}
-                    <div className="w-full flex items-center justify-between border-b pb-4">
-                        <div>
-                            <h3 className="text-2xl font-bold text-gray-800">
-                                Create New Schedule
-                            </h3>
-                            <p className="text-sm text-gray-500">
-                                Fill in the details below.
-                            </p>
+            {/* MAIN MODAL HOUSING */}
+            <div className="relative flex max-h-[95vh] w-full max-w-3xl flex-col rounded-2xl bg-white shadow-2xl overflow-hidden animate-fade-in">
+                
+                {/* HEADER SECTION */}
+                <div className="flex items-center justify-between border-b border-gray-200 px-6 py-4 bg-gray-50">
+                    <div className="flex items-center gap-3">
+                        <div className="p-2.5 bg-blue-50 text-blue-600 rounded-xl">
+                            <FaCalendarAlt className="text-xl" />
                         </div>
+                        <div>
+                            <h3 className="text-xl font-bold text-gray-900">Create New Schedule</h3>
+                            <p className="text-xs text-gray-500 mt-0.5">Map curriculum timelines, assign structural rooms, and outline instructor blocks.</p>
+                        </div>
+                    </div>
+                    <button
+                        type="button"
+                        onClick={() => setIsModalOpen(false)}
+                        className="rounded-xl p-2 text-gray-400 hover:bg-gray-200 hover:text-gray-700 transition-all"
+                    >
+                        <FaTimes className="text-lg" />
+                    </button>
+                </div>
 
-                        <button
-                            onClick={() => setIsModalOpen(false)}
-                            className="p-2 text-gray-400 hover:text-orange-500 hover:bg-orange-50 rounded-lg"
-                        >
-                            <FaTimes />
-                        </button>
+                {/* MODAL WORKSPACE FORM */}
+                <form onSubmit={submitHandler} id="scheduleForm" className="flex-1 overflow-y-auto px-6 py-6 space-y-5">
+                    
+                    {/* ================= SECTION: CURRICULUM SEARCH SEARCHABLE DROPDOWN ================= */}
+                    <div className="relative">
+                        <label className={labelStyle}>Assigned Curriculum</label>
+                        <input
+                            type="text"
+                            value={searchCurriculum || selectedCurriculumLabel}
+                            onChange={(e) => {
+                                setSearchCurriculum(e.target.value);
+                                setShowCurriculum(true);
+                            }}
+                            onFocus={() => setShowCurriculum(true)}
+                            className={textInputStyle}
+                            placeholder="Type to search curriculum profiles..."
+                        />
+                        {errors.curricula_id && <p className={errorStyle}>{errors.curricula_id}</p>}
+
+                        {showCurriculum && (
+                            <div className={dropdownContainerStyle}>
+                                {curriculla?.filter((item) =>
+                                    `${item.course_no} ${item.descriptive_title} ${item.academic_year}`
+                                        .toLowerCase()
+                                        .includes(searchCurriculum.toLowerCase())
+                                ).map((item) => (
+                                    <div
+                                        key={item.curricula_id}
+                                        onClick={() => {
+                                            setSelectedCurriculumId(item.curricula_id);
+                                            setSelectedCurriculumLabel(`${item.course_no} - ${item.descriptive_title}`);
+                                            setSearchCurriculum('');
+                                            setShowCurriculum(false);
+                                        }}
+                                        className="px-4 py-2.5 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-700 cursor-pointer transition-colors"
+                                    >
+                                        <span className="font-semibold">{item.course_no}</span> — {item.descriptive_title}
+                                    </div>
+                                ))}
+                            </div>
+                        )}
                     </div>
 
-                    {/* FORM */}
-                    <form onSubmit={submitHandler} className="w-full flex flex-col gap-6 pt-5">
-
-                        <div>
-                            <h2 className="text-xl font-bold">Schedule Details</h2>
-                            <p className="text-sm text-gray-500">
-                                Enter the required information of schedule.
-                            </p>
-                        </div>
-
-                        {/* ================= CURRICULUM ================= */}
-                        <label>Curriculum</label>
-                        <div className="relative">
-                            <input
-                                type="text"
-                                value={searchCurriculum || selectedCurriculumLabel}
-                                onChange={(e) => {
-                                    setSearchCurriculum(e.target.value);
-                                    setShowCurriculum(true);
-                                }}
-                                onClick={() => setShowCurriculum(true)}
-                                className="border p-2 rounded-md w-full"
-                                placeholder="Search curriculum..."
-                            />
-
-                            {showCurriculum && (
-                                <div className="absolute z-10 w-full bg-white border rounded-md max-h-60 overflow-y-auto shadow">
-                                    {curriculla?.filter((item) =>
-                                        `${item.course_no} ${item.descriptive_title} ${item.academic_year}`
-                                            .toLowerCase()
-                                            .includes(searchCurriculum.toLowerCase())
-                                    ).map((item) => (
-                                        <div
-                                            key={item.curricula_id}
-                                            onClick={() => {
-                                                setSelectedCurriculumId(item.curricula_id);
-                                                setSelectedCurriculumLabel(`${item.course_no} - ${item.descriptive_title}`);
-                                                setSearchCurriculum('');
-                                                setShowCurriculum(false);
-                                            }}
-                                            className="p-3 hover:bg-orange-100 cursor-pointer"
-                                        >
-                                            {item.course_no} - {item.descriptive_title}
-                                        </div>
-                                    ))}
-                                </div>
-                            )}
-                        </div>
-
-                        {/* ================= FIELDS ================= */}
-                        <div className="w-full flex gap-12">
-
-                            {/* LEFT */}
-                            <div className="flex-1 flex flex-col gap-3">
-
-                                <label>Start Time</label>
+                    {/* ================= 2-COLUMN FIELD STRUCTURES ================= */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                        
+                        {/* LEFT FORM COLUMN */}
+                        <div className="space-y-4">
+                            {/* START TIME */}
+                            <div>
+                                <label className={labelStyle}>Start Time</label>
                                 <input
                                     type="time"
                                     value={startTime}
                                     onChange={(e) => setStartTime(e.target.value)}
-                                    className="border p-2 rounded-md w-full"
+                                    className={textInputStyle}
                                 />
+                                {errors.start_time && <p className={errorStyle}>{errors.start_time}</p>}
+                            </div>
 
-                                {/* ROOM */}
-                                <label>Room</label>
-                                <div className="relative">
-                                    <input
-                                        type="text"
-                                        value={selectedRoomLabel}
-                                        readOnly
-                                        onClick={() => setShowRoom(!showRoom)}
-                                        className="border p-2 rounded-md w-full cursor-pointer"
-                                        placeholder="Select room"
-                                    />
-
-                                    {showRoom && (
-                                        <div className="absolute z-10 w-full bg-white border rounded-md max-h-40 overflow-y-auto shadow">
-                                            {resources?.map((room) => (
-                                                <div
-                                                    key={room.resources_id}
-                                                    onClick={() => {
-                                                        setSelectedRoomId(room.resources_id);
-                                                        setSelectedRoomLabel(room.room_name);
-                                                        setShowRoom(false);
-                                                    }}
-                                                    className="p-2 hover:bg-orange-100 cursor-pointer"
-                                                >
-                                                    {room.room_name}
-                                                </div>
-                                            ))}
-                                        </div>
-                                    )}
+                            {/* ROOM HOUSING */}
+                            <div className="relative">
+                                <label className={labelStyle}>Classroom / Facility Resource</label>
+                                <div 
+                                    onClick={() => setShowRoom(!showRoom)} 
+                                    className={inputStyle}
+                                >
+                                    {selectedRoomLabel || <span className="text-gray-400">Select assigned room Location</span>}
                                 </div>
+                                {errors.room_id && <p className={errorStyle}>{errors.room_id}</p>}
 
-                                <label>Duration</label>
-                                <div className="relative">
-                                <input
-                                    type="text"
-                                    readOnly
-                                    value={selectedDuration}
-                                    onClick={() => setShowDuration(!showDuration)}
-                                    className="border p-2 rounded-md w-full cursor-pointer"
-                                />
+                                {showRoom && (
+                                    <div className={dropdownContainerStyle}>
+                                        {resources?.map((room) => (
+                                            <div
+                                                key={room.resources_id}
+                                                onClick={() => {
+                                                    setSelectedRoomId(room.resources_id);
+                                                    setSelectedRoomLabel(room.room_name);
+                                                    setShowRoom(false);
+                                                }}
+                                                className="px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-700 cursor-pointer"
+                                            >
+                                                {room.room_name}
+                                            </div>
+                                        ))}
+                                    </div>
+                                )}
+                            </div>
+
+                            {/* DURATION TYPE */}
+                            <div className="relative">
+                                <label className={labelStyle}>Term Duration</label>
+                                <div 
+                                    onClick={() => setShowDuration(!showDuration)} 
+                                    className={inputStyle}
+                                >
+                                    {selectedDuration || <span className="text-gray-400">Select calendar term span</span>}
+                                </div>
+                                {errors.duration && <p className={errorStyle}>{errors.duration}</p>}
 
                                 {showDuration && (
-                                    <div className="absolute z-10 bg-white border rounded-md shadow">
+                                    <div className={dropdownContainerStyle}>
                                         {["Whole Semester", "Summer"].map((item) => (
                                             <div
                                                 key={item}
@@ -217,117 +223,164 @@ const submitHandler = (e) => {
                                                     setSelectedDuration(item);
                                                     setShowDuration(false);
                                                 }}
-                                                className="p-2 hover:bg-orange-100 cursor-pointer"
+                                                className="px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-700 cursor-pointer"
                                             >
                                                 {item}
                                             </div>
                                         ))}
                                     </div>
                                 )}
-                                </div>
                             </div>
+                        </div>
 
-                            {/* RIGHT */}
-                            <div className="flex-1 flex flex-col gap-3">
-
-                                <label>End Time</label>
+                        {/* RIGHT FORM COLUMN */}
+                        <div className="space-y-4">
+                            {/* END TIME */}
+                            <div>
+                                <label className={labelStyle}>End Time</label>
                                 <input
                                     type="time"
                                     value={endTime}
                                     onChange={(e) => setEndTime(e.target.value)}
-                                    className="border p-2 rounded-md"
+                                    className={textInputStyle}
                                 />
+                                {errors.end_time && <p className={errorStyle}>{errors.end_time}</p>}
+                            </div>
 
-                                {/* DAYS */}
-                                <label>Days</label>
-                                <div className="relative">
-                                    <input
-                                    type="text"
-                                    name="days"
-                                    readOnly
-                                    value={selectedDays.join(', ')}
-                                    onClick={() => setShowDays(!showDays)}
-                                    className="border w-full p-2 rounded-md cursor-pointer"
-                                />
+                            {/* MODERNIZED MULTIPLE DAYS SELECTOR BOX */}
+                            <div className="relative">
+                                <label className={labelStyle}>Target Days Schedule</label>
+                                <div 
+                                    onClick={() => setShowDays(!showDays)} 
+                                    className={inputStyle}
+                                >
+                                    <span className={selectedDays.length === 0 ? "text-gray-400" : "text-gray-900 font-medium"}>
+                                        {selectedDays.length === 0 
+                                            ? "Choose continuous days" 
+                                            : `Selected (${selectedDays.length}) Days`
+                                        }
+                                    </span>
+                                </div>
+                                {errors.days && <p className={errorStyle}>{errors.days}</p>}
 
-                                    {showDays && (
-                                        <div className="absolute w-full z-10 bg-white border rounded-md shadow">
-                                            {daysList.map((day) => (
+                                {showDays && (
+                                    <div className="absolute z-30 mt-1 w-full rounded-xl border border-gray-200 bg-white shadow-xl p-1.5 space-y-0.5">
+                                        {daysList.map((day) => {
+                                            const isChecked = selectedDays.includes(day);
+                                            return (
                                                 <div
                                                     key={day}
-                                                    onClick={() => {
-                                                        if (selectedDays.includes(day)) {
-                                                            setSelectedDays(selectedDays.filter(d => d !== day));
-                                                        } else {
-                                                            setSelectedDays([...selectedDays, day]);
-                                                        }
-                                                    }}
-                                                    className="p-2 hover:bg-orange-100 cursor-pointer"
+                                                    onClick={() => toggleDaySelection(day)}
+                                                    className={`flex items-center justify-between px-3 py-2 rounded-lg text-sm cursor-pointer transition-colors ${
+                                                        isChecked 
+                                                            ? "bg-blue-50 text-blue-700 font-semibold" 
+                                                            : "text-gray-700 hover:bg-gray-100"
+                                                    }`}
                                                 >
-                                                    {day}
+                                                    <span>{day}</span>
+                                                    {isChecked && <FaCheck className="text-xs text-blue-600" />}
                                                 </div>
-                                            ))}
-                                        </div>
+                                            );
+                                        })}
+                                    </div>
+                                )}
+
+                                {/* REACTIVE ACTIVE SELECTION INDICATOR PILLS */}
+                                <div className="mt-2 flex flex-wrap gap-1.5 min-h-[34px] p-2 rounded-lg border border-dashed border-gray-200 bg-gray-50/50">
+                                    {selectedDays.length > 0 ? (
+                                        selectedDays.map((day) => (
+                                            <span 
+                                                key={day} 
+                                                className="inline-flex items-center gap-1 rounded-md bg-blue-100 px-2 py-0.5 text-xs font-medium text-blue-800 border border-blue-200"
+                                            >
+                                                {day.substring(0, 3)}
+                                                <button 
+                                                    type="button" 
+                                                    onClick={() => toggleDaySelection(day)}
+                                                    className="text-blue-400 hover:text-blue-900 focus:outline-none"
+                                                >
+                                                    <FaTimes className="w-2 h-2" />
+                                                </button>
+                                            </span>
+                                        ))
+                                    ) : (
+                                        <span className="text-xs text-gray-400 italic self-center pl-1">No execution days defined.</span>
                                     )}
                                 </div>
+                            </div>
 
-                                <label>Available Slot</label>
+                            {/* AVAILABLE SEAT SLOTS */}
+                            <div>
+                                <label className={labelStyle}>Available Allocation Slots</label>
                                 <input
                                     type="number"
                                     value={availableSlot}
                                     onChange={(e) => setAvailableSlot(e.target.value)}
-                                    className="border p-2 rounded-md"
+                                    placeholder="e.g., 40"
+                                    className={textInputStyle}
                                 />
+                                {errors.available_slot && <p className={errorStyle}>{errors.available_slot}</p>}
                             </div>
                         </div>
+                    </div>
 
-                        {/* ================= INSTRUCTOR ================= */}
-                        <label>Instructor</label>
-                        <div className="relative">
-                            <input
-    type="text"
-    value={searchUser || selectedUserLabel}
-    onChange={(e) => {
-        setSearchUser(e.target.value);
-        setShowUser(true);
-    }}
-    onClick={() => setShowUser(true)}
-    className="border p-2 rounded-md w-full"
-    placeholder="Search instructor..."
-/>
+                    {/* ================= SECTION: INSTRUCTOR ASSIGNMENT DROPDOWN ================= */}
+                    <div className="relative">
+                        <label className={labelStyle}>Lead Instructor</label>
+                        <input
+                            type="text"
+                            value={searchUser || selectedUserLabel}
+                            onChange={(e) => {
+                                setSearchUser(e.target.value);
+                                setShowUser(true);
+                            }}
+                            onFocus={() => setShowUser(true)}
+                            className={textInputStyle}
+                            placeholder="Type to filter faculty instructors..."
+                        />
+                        {errors.instructor_id && <p className={errorStyle}>{errors.instructor_id}</p>}
 
-{showUser && (
-    <div className="absolute z-10 w-full bg-white border rounded-md max-h-40 overflow-y-auto shadow">
-        {users?.filter((user) =>
-            user.full_name.toLowerCase().includes(searchUser.toLowerCase())
-        ).map((user) => (
-            <div
-                key={user.id}
-                onClick={() => {
-                    setSelectedUserId(user.id);
-                    setSelectedUserLabel(user.full_name);
-                    setSearchUser('');
-                    setShowUser(false);
-                }}
-                className="p-2 hover:bg-orange-100 cursor-pointer"
-            >
-                {user.full_name}
-            </div>
-        ))}
-    </div>
-)}
-                        </div>
+                        {showUser && (
+                            <div className={dropdownContainerStyle}>
+                                {users?.filter((user) =>
+                                    user.full_name.toLowerCase().includes(searchUser.toLowerCase())
+                                ).map((user) => (
+                                    <div
+                                        key={user.id}
+                                        onClick={() => {
+                                            setSelectedUserId(user.id);
+                                            setSelectedUserLabel(user.full_name);
+                                            setSearchUser('');
+                                            setShowUser(false);
+                                        }}
+                                        className="px-4 py-2.5 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-700 cursor-pointer"
+                                    >
+                                        {user.full_name}
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+                    </div>
+                </form>
 
-                        {/* SUBMIT */}
-                        <button
-                            type="submit"
-                            className="w-full h-[45px] bg-orange-500 text-white rounded-md hover:bg-orange-600"
-                        >
-                            Create Schedule
-                        </button>
-
-                    </form>
+                {/* MODAL BOUNDARY RUNTIME FOOTER */}
+                <div className="flex items-center justify-end gap-3 border-t border-gray-200 bg-gray-50 px-6 py-4">
+                    <button
+                        type="button"
+                        onClick={() => setIsModalOpen(false)}
+                        className="rounded-xl border border-gray-300 bg-white px-5 py-2.5 text-sm font-semibold text-gray-700 transition-all hover:bg-gray-50 focus:outline-none"
+                    >
+                        Cancel
+                    </button>
+                    <button
+                        type="submit"
+                        form="scheduleForm"
+                        className="rounded-xl bg-blue-600 px-6 py-2.5 text-sm font-semibold text-white shadow-md shadow-blue-500/10 transition-all hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500/20 active:bg-blue-800"
+                    >
+                        Create Schedule
+                    </button>
                 </div>
+
             </div>
         </div>
     );

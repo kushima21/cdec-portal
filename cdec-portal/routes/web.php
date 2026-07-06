@@ -99,14 +99,15 @@ Route::post('/resources/store', [ResourcesController::class, 'store'])->name('re
 
 Route::get('/building', [BuildingController::class, 'index'])->name('building.index');
 Route::post('/building/store', [BuildingController::class, 'store'])->name('building.store');
-
 /*
 |--------------------------------------------------------------------------
 | Authenticated Routes
 |--------------------------------------------------------------------------
 */
 
+/*classes*/
 
+Route::get('/classes', fn () => Inertia::render('Admin/Classes'))->name('classes');
 
 Route::get('/schedule', fn () => Inertia::render('Admin/Schedule'))->name('schedule');
 Route::post('/schedule/store', [ScheduleController::class, 'store'])
@@ -131,5 +132,6 @@ Route::get('/dashboard', function () {
         ]
     ]);
 })->name('dashboard');
+
 
 Route::post('/student/register', [TertiaryController::class, 'store']);

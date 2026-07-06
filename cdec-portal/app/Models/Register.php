@@ -6,21 +6,20 @@ use Illuminate\Database\Eloquent\Model;
 
 class Register extends Model
 {
-    protected $table = 'register';
-
-    protected $primaryKey = 'register_id'; // ✅ ADD THIS
-
-    public $incrementing = true;
-
-    protected $keyType = 'int';
+    protected $table = 'register'; // Update to your correct database table name if different
 
     protected $fillable = [
+        'register_id',
         'firstname',
         'lastname',
-        'username',
+        'school_id',
         'email',
         'password',
         'status',
         'roles',
+    ];
+
+    protected $casts = [
+        'roles' => 'array', // 👈 Crucial: This avoids the Array to String Conversion issue here!
     ];
 }

@@ -6,28 +6,24 @@ use Illuminate\Http\Request;
 use App\Models\Program;
 use App\Models\Users;
 use App\Models\Curriculla;
-use App\Models\Colleges; // 🔹 Add this
+use App\Models\Colleges;
 use Inertia\Inertia;
 
 class ProgramController extends Controller
 {
-    // 🔹 Display Programs Page
     public function index()
     {
-        // 🔹 Get all programs
         $programs = Program::all();
 
-        // 🔹 Get all users for Program Head selection
         $users = Users::all()->map(function ($user) {
             return [
                 'id' => $user->id,
                 'firstname' => $user->firstname,
                 'lastname' => $user->lastname,
-                'fullname' => $user->firstname . ' ' . $user->lastname,
+                'fullname' => trim($user->firstname . ' ' . $user->lastname),
             ];
         });
 
-        // 🔹 Get all curricula WITH course info
         $curricula = Curriculla::with('course')->get()->map(function ($curr) {
             return [
                 'id' => $curr->id,
@@ -43,7 +39,6 @@ class ProgramController extends Controller
             ];
         });
 
-        // 🔹 Get all colleges for dropdown
         $colleges = Colleges::orderBy('college_name', 'asc')->get()->map(function($college) {
             return [
                 'college_id' => $college->college_id,
@@ -55,34 +50,35 @@ class ProgramController extends Controller
             'programs' => $programs,
             'users' => $users,
             'curricula' => $curricula,
-            'colleges' => $colleges, // 🔹 pass to frontend
+            'colleges' => $colleges,
         ]);
     }
 
-    // 🔹 Store a new program
-// 🔹 Store a new program
-public function store(Request $request)
-{
-    $request->validate([
-        'abbreviation' => 'required|string',
-        'program_name' => 'required|string',
-        'major' => 'nullable|string',
-        'college_name' => 'required|string', // ✅ change to college_name
-        'college_duration' => 'required|string',
-        'description' => 'nullable|string',
-        'program_head_id' => 'required|exists:users,id',
-    ]);
+    public function store(Request $request)
+    {
+        // Validate request data
+        $request->validate([
+            'abbreviation' => 'required|string|max:50',
+            'program_name' => 'required|string|max:255',
+            'major' => 'nullable|string|max:255',
+            'college_name' => 'required|string|max:50',
+            'college_duration' => 'required|string|max:50',
+            'description' => 'nullable|string',
+            'program_head_name' => 'required|string|max:50',
+        ]);
 
-    Program::create([
-        'abbreviation' => $request->abbreviation,
-        'program_name' => $request->program_name,
-        'major' => $request->major,
-        'college_name' => $request->college_name, // ✅ save name
-        'college_duration' => $request->college_duration,
-        'description' => $request->description,
-        'program_head' => $request->program_head_id,
-    ]);
+        // Build database entry matching explicit string mappings
+        Program::create([
+            'abbreviation' => $request->abbreviation,
+            'program_name' => $request->program_name,
+            'major' => $request->major,
+            'college_duration' => $request->college_duration,
+            'description' => $request->description,
+            'program_head' => $request->program_head_name, // Saves text string name
+            'college_name' => $request->college_name,       // Saves text department name
+            'program_status' => 'Active'
+        ]);
 
-    return redirect()->back()->with('success', 'Program created successfully');
-}
+        return redirect()->back()->with('success', 'Program track added successfully');
+    }
 }

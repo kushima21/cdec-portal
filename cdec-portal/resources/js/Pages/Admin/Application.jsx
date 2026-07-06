@@ -67,105 +67,115 @@ const programs = [
                         </div>
                         <div className="mt-6 rounded-2xl border border-gray-200 bg-white shadow-sm">
 
-    <div className="flex items-center justify-between p-6 border-b">
-        <div>
-            <h2 className="text-2xl font-bold text-gray-800">
-                College Programs
-            </h2>
-
-            <p className="text-sm text-gray-500">
-                Program-based intakes accepting applications.
-            </p>
-        </div>
-
-        <span className="text-xs bg-gray-100 px-3 py-1 rounded-full">
-            {programs.length} Options
-        </span>
-    </div>
-
-    <div className="divide-y">
-
-        {programs.map((program) => (
-
-            <div key={program.id}>
-
-                <div className="flex justify-between items-start p-5">
-
-                    <div className="flex gap-4">
-
-                        <div className="w-1 rounded-full bg-purple-600"></div>
-
-                        <div>
-
-                            <div className="flex items-center gap-2">
-
-                                <h2 className="font-bold text-gray-800">
-                                    {program.title}
+                        <div className="flex items-center justify-between p-6 border-b">
+                            <div>
+                                <h2 className="text-2xl font-bold text-gray-800">
+                                    College Programs
                                 </h2>
 
-                                <span className="text-xs bg-gray-100 px-2 py-1 rounded-full">
-                                    {program.intakes} Intakes
-                                </span>
-
+                                <p className="text-sm text-gray-500">
+                                    Program-based intakes accepting applications.
+                                </p>
                             </div>
 
-                            <p className="text-sm text-gray-500 mt-1">
-                                {program.code}
-                            </p>
-
-                            <p className="text-sm text-gray-500">
-                                {program.year}
-                            </p>
-
-                            <p className="text-sm text-gray-500">
-                                {program.year} · {program.semester}
-                            </p>
-
+                            <span className="text-xs bg-gray-100 px-3 py-1 rounded-full">
+                                {programs.length} Options
+                            </span>
                         </div>
 
-                    </div>
+                        <div className="divide-y">
 
-                    <button
-                        onClick={() =>
-                            setOpenProgram(
-                                openProgram === program.id ? null : program.id
-                            )
-                        }
-                        className="px-4 py-2 rounded-full border hover:bg-gray-100 text-sm"
-                    >
-                        {openProgram === program.id ? "Hide ▲" : "More ▼"}
-                    </button>
+                            {programs.map((program) => (
 
-                </div>
+                                <div key={program.id}>
 
-                {openProgram === program.id && (
+                                    <div className="flex justify-between items-start p-5">
 
-                    <div className="px-6 pb-5">
+                                        <div className="flex gap-4">
 
-                        <div className="border rounded-xl overflow-hidden">
+                                            <div className="w-1 rounded-full bg-purple-600"></div>
 
-                            {program.levels.map((level) => (
+                                            <div>
 
-                                <div
-                                    key={level}
-                                    className="flex justify-between items-center border-b last:border-b-0 px-5 py-4 hover:bg-gray-50"
-                                >
+                                                <div className="flex items-center gap-2">
 
-                                    <div>
+                                                    <h2 className="font-bold text-gray-800">
+                                                        {program.title}
+                                                    </h2>
 
-                                        <h2 className="font-semibold text-gray-800">
-                                            {level}
-                                        </h2>
+                                                    <span className="text-xs bg-gray-100 px-2 py-1 rounded-full">
+                                                        {program.intakes} Intakes
+                                                    </span>
 
-                                        <p className="text-sm text-gray-500">
-                                            {level} · {program.semester}
-                                        </p>
+                                                </div>
+
+                                                <p className="text-sm text-gray-500 mt-1">
+                                                    {program.code}
+                                                </p>
+
+                                                <p className="text-sm text-gray-500">
+                                                    {program.year}
+                                                </p>
+
+                                                <p className="text-sm text-gray-500">
+                                                    {program.year} · {program.semester}
+                                                </p>
+
+                                            </div>
+
+                                        </div>
+
+                                        <button
+                                            onClick={() =>
+                                                setOpenProgram(
+                                                    openProgram === program.id ? null : program.id
+                                                )
+                                            }
+                                            className="px-4 py-2 rounded-full border hover:bg-gray-100 text-sm"
+                                        >
+                                            {openProgram === program.id ? "Hide ▲" : "More ▼"}
+                                        </button>
 
                                     </div>
 
-                                    <button className="text-purple-600 font-semibold hover:underline">
-                                        Apply →
-                                    </button>
+                                    {openProgram === program.id && (
+
+                                        <div className="px-6 pb-5">
+
+                                            <div className="border rounded-xl overflow-hidden">
+
+                                                {program.levels.map((level) => (
+
+                                                    <div
+                                                        key={level}
+                                                        className="flex justify-between items-center border-b last:border-b-0 px-5 py-4 hover:bg-gray-50"
+                                                    >
+
+                                                        <div>
+
+                                                            <h2 className="font-semibold text-gray-800">
+                                                                {level}
+                                                            </h2>
+
+                                                            <p className="text-sm text-gray-500">
+                                                                {level} · {program.semester}
+                                                            </p>
+
+                                                        </div>
+
+                                                        <button className="text-purple-600 font-semibold hover:underline">
+                                                            Apply →
+                                                        </button>
+
+                                                    </div>
+
+                                                ))}
+
+                                            </div>
+
+                                        </div>
+
+                                    )}
 
                                 </div>
 
@@ -174,16 +184,6 @@ const programs = [
                         </div>
 
                     </div>
-
-                )}
-
-            </div>
-
-        ))}
-
-    </div>
-
-</div>
                     </div>
                 </div>
             </AdminLayout>

@@ -181,7 +181,7 @@ const auth = props.auth;
                 <div className='flex-1 h-full overflow-hidden'>
                     <div className='w-full h-[50px] fixed bg-white border-b border-gray-200 shadow-sm z-10'></div>
 
-                    <div className='h-full overflow-y-auto'>
+                    <div className='h-full overflow-y-auto pt-2'>
                         {children}
                     </div>
                 </div>

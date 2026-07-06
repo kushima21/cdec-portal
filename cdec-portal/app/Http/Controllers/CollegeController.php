@@ -47,7 +47,7 @@ public function index()
 {
     $colleges = Colleges::all()->map(function ($college) {
         return [
-            'id' => $college->id,
+            'id' => $college->college_id,
             'abbreviation' => $college->abbreviation,
             'college_name' => $college->college_name,
             'college_logo' => $college->college_logo,
@@ -60,7 +60,7 @@ public function index()
     });
 
     // ✅ GET USERS
-    $users = Users::select('id', 'firstname', 'lastname')->get();
+    $users = Users::select('user_id', 'firstname', 'lastname')->get();
 
     return Inertia::render('Admin/Colleges', [
         'colleges' => $colleges,

@@ -27,7 +27,7 @@ export default function User({ users }) {
         middlename: '',
         lastname: '',
         email: '',
-        username: '',
+        school_id: '',
     });
 
     // ================= SEARCH =================
@@ -173,8 +173,8 @@ export default function User({ users }) {
                                             </div>
                                         </td>
 
-                                        {/* Username */}
-                                        <td className="px-6 py-4 text-sm text-gray-500 font-medium">{user.username}</td>
+                                        {/* School ID */}
+                                        <td className="px-6 py-4 text-sm text-gray-500 font-medium">{user.school_id}</td>
 
                                         {/* Status */}
                                         <td className="px-6 py-4">

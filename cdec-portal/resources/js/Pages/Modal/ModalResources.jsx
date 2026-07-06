@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import { router } from '@inertiajs/react';
-import { FaTimes } from 'react-icons/fa';
+import { FaTimes, FaDoorOpen } from 'react-icons/fa';
 
-export default function ModalResources({ setIsModalOpen, buildings }) {
-
+export default function ModalResources({ setIsModalOpen, buildings = [] }) {
+    // ================= STATE CONFIGURATIONS =================
     const [form, setForm] = useState({
         room_name: '',
         glossary: '',
@@ -12,153 +12,192 @@ export default function ModalResources({ setIsModalOpen, buildings }) {
         floor: '',
         capacity: ''
     });
+    const [errors, setErrors] = useState({});
 
+    // ================= HANDLERS =================
     const handleChange = (e) => {
-        setForm({
-            ...form,
-            [e.target.name]: e.target.value
-        });
+        const { name, value } = e.target;
+        setForm(prev => ({ ...prev, [name]: value }));
+        if (errors[name]) setErrors(prev => ({ ...prev, [name]: null }));
     };
 
     const handleSubmit = (e) => {
         e.preventDefault();
+        setErrors({});
 
         router.post('/resources/store', form, {
             onSuccess: () => {
                 setIsModalOpen(false);
-            }
+                setForm({
+                    room_name: '',
+                    glossary: '',
+                    description: '',
+                    building: '',
+                    floor: '',
+                    capacity: ''
+                });
+            },
+            onError: (err) => setErrors(err)
         });
     };
 
+    // Shared Modern UI Style Tokens
+    const labelStyle = "text-xs font-semibold uppercase tracking-wider text-gray-600 block mb-1";
+    const textInputStyle = "w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 transition-all focus:border-blue-500 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500/20 placeholder-gray-400";
+    const errorStyle = "text-xs font-medium text-red-600 mt-1";
+
     return (
-        <div className="w-full h-screen bg-gray-500/50 fixed inset-0 z-50">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-gray-900/60 p-4 backdrop-blur-sm transition-all">
+            {/* BACKDROP INTERCEPTOR */}
+            <div className="fixed inset-0" onClick={() => setIsModalOpen(false)} />
 
-            {/* OUTSIDE CLICK */}
-            <div 
-                onClick={() => setIsModalOpen(false)}
-                className="w-full h-full flex justify-center items-center overflow-y-auto pt-10 pb-8"
-            >
-
-                {/* MODAL CONTENT */}
-                <div 
-                    onClick={(e) => e.stopPropagation()}
-                    className="w-[50%] bg-white rounded-xl shadow-4xl p-5 flex flex-col"
-                >
-
-                    {/* HEADER */}
-                    <div className="w-full flex items-center justify-between border-b pb-4">
-                        <div>
-                            <h3 className="text-2xl font-bold text-gray-800">
-                                Create New Room
-                            </h3>
-                            <p className="text-sm text-gray-500">
-                                Fill in the details below.
-                            </p>
+            {/* MAIN MODAL HOUSING */}
+            <div className="relative flex max-h-[95vh] w-full max-w-3xl flex-col rounded-2xl bg-white shadow-2xl overflow-hidden animate-fade-in">
+                
+                {/* HEADER SECTION */}
+                <div className="flex items-center justify-between border-b border-gray-200 px-6 py-4 bg-gray-50">
+                    <div className="flex items-center gap-3">
+                        <div className="p-2.5 bg-blue-50 text-blue-600 rounded-xl">
+                            <FaDoorOpen className="text-xl" />
                         </div>
+                        <div>
+                            <h3 className="text-xl font-bold text-gray-900">Create New Room</h3>
+                            <p className="text-xs text-gray-500 mt-0.5">Register structural locations, inventory spaces, and assign base limits.</p>
+                        </div>
+                    </div>
+                    <button 
+                        type="button"
+                        onClick={() => setIsModalOpen(false)}
+                        className="rounded-xl p-2 text-gray-400 hover:bg-gray-200 hover:text-gray-700 transition-all"
+                    >
+                        <FaTimes className="text-lg" />
+                    </button>
+                </div>
 
-                        <button 
-                            onClick={() => setIsModalOpen(false)}
-                            className="p-2 text-gray-400 hover:text-orange-500 hover:bg-orange-50 rounded-lg"
-                        >
-                            <FaTimes />
-                        </button>
+                {/* MODAL WORKSPACE FORM */}
+                <form onSubmit={handleSubmit} id="resourceForm" className="flex-1 overflow-y-auto px-6 py-6 space-y-5">
+                    <div>
+                        <h2 className="text-base font-bold text-gray-800">Room Details</h2>
+                        <p className="text-xs text-gray-500">Enter physical location references and environmental properties.</p>
                     </div>
 
-                    {/* FORM */}
-                    <form 
-                        onSubmit={handleSubmit}
-                        className="w-full flex flex-col gap-6 pt-5"
-                    >
-
-                        {/* TITLE */}
-                        <div>
-                            <h2 className="text-xl font-bold">Room Details</h2>
-                            <p className="text-sm text-gray-500">
-                                Enter the required information to register a room.
-                            </p>
-                        </div>
-
-                        {/* FIELDS */}
-                        <div className="w-full flex gap-12">
-
-                            {/* LEFT */}
-                            <div className="flex-1 flex flex-col gap-3">
-                                <label>Room Name</label>
+                    {/* 2-COLUMN STRUCTURE */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                        
+                        {/* LEFT COLUMN */}
+                        <div className="space-y-4">
+                            {/* ROOM NAME */}
+                            <div>
+                                <label className={labelStyle}>Room Designation / Name</label>
                                 <input 
                                     type="text"
                                     name="room_name"
                                     value={form.room_name}
                                     onChange={handleChange}
-                                    className="border p-2 rounded-md"
+                                    placeholder="e.g., Room 302, Lab A"
+                                    className={textInputStyle}
                                 />
+                                {errors.room_name && <p className={errorStyle}>{errors.room_name}</p>}
+                            </div>
 
-                                <label>Glossary</label>
+                            {/* GLOSSARY / CODE */}
+                            <div>
+                                <label className={labelStyle}>Glossary Key / Short Code</label>
                                 <input
                                     type="text"
                                     name="glossary"
                                     value={form.glossary}
                                     onChange={handleChange}
-                                    className="border p-2 rounded-md"
+                                    placeholder="e.g., COMP-LAB"
+                                    className={textInputStyle}
                                 />
+                                {errors.glossary && <p className={errorStyle}>{errors.glossary}</p>}
+                            </div>
 
-                                <label>Description</label>
+                            {/* DESCRIPTION */}
+                            <div>
+                                <label className={labelStyle}>Space Description</label>
                                 <textarea
                                     name="description"
                                     value={form.description}
                                     onChange={handleChange}
-                                    className="border p-2 rounded-md h-[150px]"
+                                    placeholder="Describe architectural features or primary operational purposes..."
+                                    className={`${textInputStyle} h-[116px] resize-none`}
                                 />
+                                {errors.description && <p className={errorStyle}>{errors.description}</p>}
                             </div>
+                        </div>
 
-                            {/* RIGHT */}
-                            <div className="flex-1 flex flex-col gap-3">
-
-                                <label>Building</label>
+                        {/* RIGHT COLUMN */}
+                        <div className="space-y-4">
+                            {/* BUILDING SELECTION */}
+                            <div>
+                                <label className={labelStyle}>Assigned Complex / Building</label>
                                 <select
                                     name="building"
                                     value={form.building}
                                     onChange={handleChange}
-                                    className="border p-2 rounded-md"
+                                    className={textInputStyle}
                                 >
-                                    <option value="">Select Building</option>
-
+                                    <option value="" disabled>Select target structural block...</option>
                                     {buildings.map((building) => (
                                         <option key={building.id} value={building.id}>
                                             {building.name}
                                         </option>
                                     ))}
                                 </select>
+                                {errors.building && <p className={errorStyle}>{errors.building}</p>}
+                            </div>
 
-                                <label>Floor</label>
+                            {/* FLOOR LEVEL */}
+                            <div>
+                                <label className={labelStyle}>Floor Level Placement</label>
                                 <input
                                     type="text"
                                     name="floor"
                                     value={form.floor}
                                     onChange={handleChange}
-                                    className="border p-2 rounded-md"
+                                    placeholder="e.g., 3rd Floor"
+                                    className={textInputStyle}
                                 />
+                                {errors.floor && <p className={errorStyle}>{errors.floor}</p>}
+                            </div>
 
-                                <label>Capacity</label>
+                            {/* SEATING CAPACITY */}
+                            <div>
+                                <label className={labelStyle}>Maximum Occupancy / Capacity</label>
                                 <input
                                     type="number"
                                     name="capacity"
                                     value={form.capacity}
                                     onChange={handleChange}
-                                    className="border p-2 rounded-md"
+                                    placeholder="e.g., 45"
+                                    className={textInputStyle}
                                 />
+                                {errors.capacity && <p className={errorStyle}>{errors.capacity}</p>}
                             </div>
                         </div>
+                    </div>
+                </form>
 
-                        {/* SUBMIT */}
-                        <button 
-                            type="submit"
-                            className="w-full h-[45px] bg-orange-500 text-white rounded-md hover:bg-orange-600"
-                        >
-                            Create Room
-                        </button>
-
-                    </form>
+                {/* MODAL RUNTIME FOOTER */}
+                <div className="flex items-center justify-end gap-3 border-t border-gray-200 bg-gray-50 px-6 py-4">
+                    <button
+                        type="button"
+                        onClick={() => setIsModalOpen(false)}
+                        className="rounded-xl border border-gray-300 bg-white px-5 py-2.5 text-sm font-semibold text-gray-700 transition-all hover:bg-gray-50 focus:outline-none"
+                    >
+                        Cancel
+                    </button>
+                    <button 
+                        type="submit"
+                        form="resourceForm"
+                        className="rounded-xl bg-blue-600 px-6 py-2.5 text-sm font-semibold text-white shadow-md shadow-blue-500/10 transition-all hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500/20 active:bg-blue-800"
+                    >
+                        Create Room
+                    </button>
                 </div>
+
             </div>
         </div>
     );
