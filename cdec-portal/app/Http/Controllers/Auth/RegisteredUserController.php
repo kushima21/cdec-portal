@@ -15,26 +15,34 @@ class RegisteredUserController extends Controller
     // LOGIN
 public function login(Request $request)
 {
-    $request->validate([
-        'email' => 'required|email',
-        'password' => 'required',
+    $validated = $request->validate([
+        'email' => ['required', 'email'],
+        'password' => ['required'],
     ]);
 
-    $user = Register::where('email', trim($request->email))->first();
+    $user = Register::where('email', trim($validated['email']))
+        ->where('status', 'Active')
+        ->first();
 
-    if (!$user || !Hash::check($request->password, $user->password)) {
+    if (!$user) {
         return back()->withErrors([
-            'email' => 'Invalid credentials'
+            'email' => 'Email does not exist.',
         ]);
     }
 
-session([
-    'user_id' => $user->register_id,
-    'user_name' => $user->firstname . ' ' . $user->lastname,
-    'user_email' => $user->email,
-    'school_id' => $user->school_id, // ✅ ADD THIS
-    'role' => $user->roles
-]);
+    if (!Hash::check($validated['password'], $user->password)) {
+        return back()->withErrors([
+            'password' => 'Incorrect password.',
+        ]);
+    }
+
+    session([
+        'user_id'    => $user->register_id,
+        'user_name'  => $user->firstname . ' ' . $user->lastname,
+        'user_email' => $user->email,
+        'school_id'  => $user->school_id,
+        'role'       => $user->roles,
+    ]);
 
     return redirect()->route('dashboard');
 }

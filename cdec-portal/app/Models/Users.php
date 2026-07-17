@@ -7,6 +7,11 @@ use Illuminate\Database\Eloquent\Model;
 class Users extends Model
 {
     protected $table = 'users';
+    protected $primaryKey = 'user_id';
+
+    public $incrementing = true;
+
+    protected $keyType = 'int';
 
     protected $fillable = [
         'prefix',
@@ -34,8 +39,18 @@ class Users extends Model
         'roles' => 'array',
     ];
 
+    protected $appends = [
+        'full_name'
+    ];
+
     public function getFullNameAttribute()
     {
-        return "{$this->firstname} {$this->lastname}";
+        return trim(
+            ($this->prefix ? $this->prefix . ' ' : '') .
+            $this->firstname . ' ' .
+            ($this->middlename ? $this->middlename . ' ' : '') .
+            $this->lastname .
+            ($this->suffix ? ' ' . $this->suffix : '')
+        );
     }
 }

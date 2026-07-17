@@ -5,76 +5,108 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
-use App\Models\Building;
-use App\Models\Resources;
 use App\Models\Users;
 use App\Models\Course;
+use App\Models\Resources;
 use App\Models\Curriculla;
-use App\Models\Program;
-use App\Models\College;
 use App\Models\Schedules;
 use App\Models\AcademicTerm;
 
 class ScheduleController extends Controller
 {
-    // ================= INDEX =================
-
-
-    // ================= STORE =================
-
-    
-public function store(Request $request)
+    // ==========================================
+    // DISPLAY SCHEDULE LIST
+    // ==========================================
+    public function index()
 {
-    $validated = $request->validate([
-        'curricula_id' => 'required',
-        'room_id' => 'required',
-        'instructor_id' => 'required',
-        'start_time' => 'required',
-        'end_time' => 'required',
-        'duration' => 'required',
-        'available_slot' => 'required|integer',
-        'days' => 'required|array',
+    $users = Users::select(
+        'user_id',
+        'firstname',
+        'middlename',
+        'lastname',
+        'prefix',
+        'suffix',
+        'school_id'
+    )
+    ->orderBy('lastname')
+    ->get();
+
+    $schedules = Schedules::with([
+    'curricula',
+    'course',
+    'room',
+    'instructor',
+    'academic'
+])->get();
+
+    return Inertia::render('Admin/Schedule', [
+        'users' => $users,
+        'curriculla' => Curriculla::all(),
+        'resources' => Resources::all(),
+        'academicTerms' => AcademicTerm::where('academic_status','Ongoing')->get(),
+        'schedules' => $schedules,
     ]);
-
-    // ACTIVE TERM
-$activeTerm = AcademicTerm::where('academic_status', 'Ongoing')->first();
-
-// ✅ FIX: fallback if walay "Ongoing"
-if (!$activeTerm) {
-    $activeTerm = AcademicTerm::first();
 }
 
-    // GET CURRICULUM (para course_id + program_id)
-    $curriculum = Curriculla::findOrFail($validated['curricula_id']);
+    // ==========================================
+    // STORE NEW SCHEDULE RECORD
+    // ==========================================
+    public function store(Request $request)
+    {
+        $validated = $request->validate([
+            'academic_id'    => 'required',
+            'curricula_id'   => 'required',
+            'resources_id'   => 'required', 
+            'instructor_id'  => 'required',
+            'days'           => 'required|array',
+            'start_time'     => 'required',
+            'end_time'       => 'required',
+            'duration'       => 'required',
+            'available_slot' => 'required|integer',
+        ]);
 
-    // GET ROOM (para building_id)
-    $room = Resources::findOrFail($validated['room_id']);
+        $activeTerm = AcademicTerm::findOrFail($validated['academic_id']);
+        $curriculum = Curriculla::findOrFail($validated['curricula_id']);
+        $course     = Course::findOrFail($curriculum->course_id);
+        $instructor = Users::findOrFail($validated['instructor_id']);
+        
+        // 🛠️ FIXED: Variable renamed from $room_name to $room to prevent save crashes
+        $room       = Resources::findOrFail($validated['resources_id']); 
 
-    Schedules::create([
-        'curricula_id' => $validated['curricula_id'],
+        Schedules::create([
+            'curricula_id'      => $curriculum->curricula_id,
+            'course_id'         => $course->course_id,
+            'course_code'       => $course->course_code,
+            'course_no'         => $course->course_no,
+            'descriptive_title' => $course->descriptive_title,
+            'program_id'        => $curriculum->program_id,
+            
+            'academic_id'       => $activeTerm->academic_id,
+            'academic_year'     => $activeTerm->academic_year,
+            'academic_period'   => $activeTerm->academic_period,
 
-        // ✅ AUTO FROM CURRICULUM
-        'course_id' => $curriculum->course_id,
-        'program_id' => $curriculum->program_id,
+            'building_id'       => $room->building_id,
+            'resources_id'      => $room->resources_id,
+            'room_name'         => $room->room_name ,
 
-        // term
-        'academic_id' => $activeTerm->academic_id,
+            'instructor_id'     => $instructor->user_id,
+            'prefix'            => $instructor->prefix,
+            'instructor_name'   => trim(
+                $instructor->firstname . ' ' .
+                ($instructor->middlename ? $instructor->middlename . ' ' : '') .
+                $instructor->lastname .
+                ($instructor->suffix ? ' ' . $instructor->suffix : '')
+            ),
 
-        // room + building
-        'room_id' => $validated['room_id'],
-        'building_id' => $room->building_id,
+            'days'              => implode(',', $validated['days']),
+            'start_time'        => $validated['start_time'],
+            'end_time'          => $validated['end_time'],
+            'duration'          => $validated['duration'],
+            'available_slot'    => $validated['available_slot'],
+        ]);
 
-        // others
-        'instructor_id' => $validated['instructor_id'],
-        'start_time' => $validated['start_time'],
-        'end_time' => $validated['end_time'],
-        'duration' => $validated['duration'],
-        'available_slot' => $validated['available_slot'],
-        'days' => implode(',', $validated['days']),
-    ]);
-
-    return redirect()->route('schedule.index')
-        ->with('success', 'Schedule created successfully');
-}
-
+        return redirect()
+            ->route('schedule.index')
+            ->with('success', 'Schedule created successfully.');
+    }
 }

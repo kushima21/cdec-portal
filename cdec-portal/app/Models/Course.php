@@ -6,14 +6,20 @@ use Illuminate\Database\Eloquent\Model;
 
 class Course extends Model
 {
+    protected $table = 'courses';
+
+    protected $primaryKey = 'course_id';
+
+    public $incrementing = true;
+
+    protected $keyType = 'int';
+
     protected $fillable = [
         'course_code',
         'course_no',
         'descriptive_title',
-        'lab_units',
         'lecture_units',
+        'lab_units',
         'total_units',
     ];
-
-    
 }

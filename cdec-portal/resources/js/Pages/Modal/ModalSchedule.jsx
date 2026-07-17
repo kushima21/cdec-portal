@@ -2,13 +2,14 @@ import { useState } from 'react';
 import { router } from '@inertiajs/react';
 import { FaTimes, FaCalendarAlt, FaCheck } from 'react-icons/fa';
 
-export default function ModalSchedule({ setIsModalOpen, users, curriculla, resources }) {
+export default function ModalSchedule({ setIsModalOpen, users, curriculla, resources, academicTerms }) {
     // ================= VISIBILITY CONTROLS =================
     const [showCurriculum, setShowCurriculum] = useState(false);
     const [showRoom, setShowRoom] = useState(false);
     const [showUser, setShowUser] = useState(false);
     const [showDays, setShowDays] = useState(false);
     const [showDuration, setShowDuration] = useState(false);
+    const [showAcademicTerm, setShowAcademicTerm] = useState(false);
 
     // ================= FORM DATA STATES =================
     const [startTime, setStartTime] = useState('');
@@ -16,6 +17,7 @@ export default function ModalSchedule({ setIsModalOpen, users, curriculla, resou
     const [availableSlot, setAvailableSlot] = useState('');
     const [searchCurriculum, setSearchCurriculum] = useState('');
     const [searchUser, setSearchUser] = useState('');
+    const [searchAcademicTerm, setSearchAcademicTerm] = useState('');
     const [selectedDays, setSelectedDays] = useState([]);
     const [selectedDuration, setSelectedDuration] = useState('');
 
@@ -26,6 +28,8 @@ export default function ModalSchedule({ setIsModalOpen, users, curriculla, resou
     const [selectedRoomLabel, setSelectedRoomLabel] = useState('');
     const [selectedUserId, setSelectedUserId] = useState('');
     const [selectedUserLabel, setSelectedUserLabel] = useState('');
+    const [selectedAcademicId, setSelectedAcademicId] = useState('');
+    const [selectedAcademicLabel, setSelectedAcademicLabel] = useState('');
 
     // ================= FEEDBACK AND DATA LOOKUPS =================
     const [errors, setErrors] = useState({});
@@ -48,8 +52,9 @@ export default function ModalSchedule({ setIsModalOpen, users, curriculla, resou
         setErrors({});
 
         router.post('/schedule/store', {
+            academic_id: selectedAcademicId,
             curricula_id: selectedCurriculumId,
-            room_id: selectedRoomId,
+            resources_id: selectedRoomId, 
             instructor_id: selectedUserId,
             days: selectedDays,
             start_time: startTime,
@@ -73,6 +78,9 @@ export default function ModalSchedule({ setIsModalOpen, users, curriculla, resou
                 setAvailableSlot('');
                 setSearchCurriculum('');
                 setSearchUser('');
+                setSelectedAcademicId('');
+                setSelectedAcademicLabel('');
+                setSearchAcademicTerm('');
             },
             onError: (err) => setErrors(err)
         });
@@ -116,9 +124,75 @@ export default function ModalSchedule({ setIsModalOpen, users, curriculla, resou
                 {/* MODAL WORKSPACE FORM */}
                 <form onSubmit={submitHandler} id="scheduleForm" className="flex-1 overflow-y-auto px-6 py-6 space-y-5">
                     
-                    {/* ================= SECTION: CURRICULUM SEARCH SEARCHABLE DROPDOWN ================= */}
+                    {/* ================= SECTION: ACADEMIC TERM ================= */}
                     <div className="relative">
-                        <label className={labelStyle}>Assigned Curriculum</label>
+                        <label className={labelStyle}>
+                            Assigned Academic Term
+                        </label>
+                        <input
+                            type="text"
+                            value={searchAcademicTerm || selectedAcademicLabel}
+                            onChange={(e) => {
+                                setSearchAcademicTerm(e.target.value);
+                                setShowAcademicTerm(true);
+                            }}
+                            onFocus={() => setShowAcademicTerm(true)}
+                            placeholder="Search academic term..."
+                            className={textInputStyle}
+                        />
+
+                        {errors.academic_id && (
+                            <p className={errorStyle}>{errors.academic_id}</p>
+                        )}
+
+                        {showAcademicTerm && (
+                            <div className={dropdownContainerStyle}>
+                                {academicTerms
+                                    ?.filter(term =>
+                                        `${term.academic_year} ${term.academic_period}`
+                                            .toLowerCase()
+                                            .includes(searchAcademicTerm.toLowerCase())
+                                    )
+                                    .map(term => (
+                                        <div
+                                            key={term.academic_id}
+                                            onClick={() => {
+                                                setSelectedAcademicId(term.academic_id);
+                                                setSelectedAcademicLabel(
+                                                    `${term.academic_year} • ${term.academic_period}`
+                                                );
+                                                setSearchAcademicTerm('');
+                                                setShowAcademicTerm(false);
+                                            }}
+                                            className="cursor-pointer px-4 py-3 hover:bg-blue-50"
+                                        >
+                                            <div className="font-semibold">
+                                                {term.academic_year}
+                                            </div>
+                                            <div className="text-xs text-gray-500">
+                                                {term.academic_period}
+                                            </div>
+                                        </div>
+                                    ))}
+
+                                {academicTerms?.filter(term =>
+                                    `${term.academic_year} ${term.academic_period}`
+                                        .toLowerCase()
+                                        .includes(searchAcademicTerm.toLowerCase())
+                                ).length === 0 && (
+                                    <div className="px-4 py-3 text-gray-500">
+                                        No Academic Term Found
+                                    </div>
+                                )}
+                            </div>
+                        )}
+                    </div>
+
+                    {/* ================= SECTION: CURRICULUM ================= */}
+                    <div className="relative">
+                        <label className={`${labelStyle} mt-2`}>
+                            Assigned Curriculum
+                        </label>
                         <input
                             type="text"
                             value={searchCurriculum || selectedCurriculumLabel}
@@ -182,7 +256,7 @@ export default function ModalSchedule({ setIsModalOpen, users, curriculla, resou
                                 >
                                     {selectedRoomLabel || <span className="text-gray-400">Select assigned room Location</span>}
                                 </div>
-                                {errors.room_id && <p className={errorStyle}>{errors.room_id}</p>}
+                                {errors.resources_id && <p className={errorStyle}>{errors.resources_id}</p>}
 
                                 {showRoom && (
                                     <div className={dropdownContainerStyle}>
@@ -326,7 +400,9 @@ export default function ModalSchedule({ setIsModalOpen, users, curriculla, resou
 
                     {/* ================= SECTION: INSTRUCTOR ASSIGNMENT DROPDOWN ================= */}
                     <div className="relative">
-                        <label className={labelStyle}>Lead Instructor</label>
+                        <label className={labelStyle}>
+                            Lead Instructor
+                        </label>
                         <input
                             type="text"
                             value={searchUser || selectedUserLabel}
@@ -336,28 +412,47 @@ export default function ModalSchedule({ setIsModalOpen, users, curriculla, resou
                             }}
                             onFocus={() => setShowUser(true)}
                             className={textInputStyle}
-                            placeholder="Type to filter faculty instructors..."
+                            placeholder="Search instructor..."
                         />
                         {errors.instructor_id && <p className={errorStyle}>{errors.instructor_id}</p>}
 
                         {showUser && (
                             <div className={dropdownContainerStyle}>
+                                {users
+                                    ?.filter((user) =>
+                                        user.full_name
+                                            ?.toLowerCase()
+                                            .includes(searchUser.toLowerCase())
+                                    )
+                                    .map((user) => (
+                                        <div
+                                            key={user.user_id}
+                                            onClick={() => {
+                                                setSelectedUserId(user.user_id);
+                                                setSelectedUserLabel(user.full_name);
+                                                setSearchUser('');
+                                                setShowUser(false);
+                                            }}
+                                            className="px-4 py-2 cursor-pointer hover:bg-blue-50"
+                                        >
+                                            <div className="font-semibold">
+                                                {user.full_name}
+                                            </div>
+                                            <div className="text-xs text-gray-500">
+                                                {user.school_id}
+                                            </div>
+                                        </div>
+                                    ))}
+
                                 {users?.filter((user) =>
-                                    user.full_name.toLowerCase().includes(searchUser.toLowerCase())
-                                ).map((user) => (
-                                    <div
-                                        key={user.id}
-                                        onClick={() => {
-                                            setSelectedUserId(user.id);
-                                            setSelectedUserLabel(user.full_name);
-                                            setSearchUser('');
-                                            setShowUser(false);
-                                        }}
-                                        className="px-4 py-2.5 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-700 cursor-pointer"
-                                    >
-                                        {user.full_name}
+                                    user.full_name
+                                        ?.toLowerCase()
+                                        .includes(searchUser.toLowerCase())
+                                ).length === 0 && (
+                                    <div className="px-4 py-3 text-gray-500">
+                                        No instructor found.
                                     </div>
-                                ))}
+                                )}
                             </div>
                         )}
                     </div>

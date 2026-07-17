@@ -69,17 +69,23 @@ public function index()
             'pre_requisites.*' => 'exists:courses,course_id', // corrected
         ]);
 
-        foreach ($data['course_ids'] as $courseId) {
-            Curriculla::create([
-                'program_id' => $data['program_id'],
-                'course_id' => $courseId,
-                'academic_year' => $data['academic_year'],
-                'academic_period' => $data['academic_period'],
-                'academic_level' => $data['academic_level'],
-                'course_type' => $data['course_type'],
-                'pre_requisites' => json_encode($data['pre_requisites'] ?? []),
-            ]);
-        }
+foreach ($data['course_ids'] as $course_id) {
+
+    $course = Course::findOrFail($course_id);
+
+    Curriculla::create([
+        'program_id' => $data['program_id'],
+        'course_id' => $course_id,
+        'course_code' => $course->course_code,
+        'course_no' => $course->course_no,
+        'descriptive_title' => $course->descriptive_title,
+        'academic_year' => $data['academic_year'],
+        'academic_period' => $data['academic_period'],
+        'academic_level' => $data['academic_level'],
+        'course_type' => $data['course_type'],
+        'pre_requisites' => json_encode($data['pre_requisites'] ?? []),
+    ]);
+}
 
         return redirect()->back()->with('success', 'Curricula created successfully.');
     }

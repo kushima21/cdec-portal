@@ -30,25 +30,25 @@ const submit = (e) => {
                                 <span className='mr-1'>or</span>
                                 
                                     <Link 
-        href={route('register')} 
-        className='text-orange-600 font-semibold hover:underline'
-    >
-        Start to enroll today!
-    </Link>
-                            </p>
+                                        href={route('register')} 
+                                        className='text-orange-600 font-semibold hover:underline'
+                                    >
+                                        Start to enroll today!
+                                    </Link>
+                                                            </p>
 
-<form onSubmit={submit} className='w-full max-w-md space-y-6'>
-                                {/* Email */}
-                                <div className='flex flex-col gap-2'>
-                                    <label className='font-semibold'>Email</label>
-<input 
-    type='text'
-    value={data.email}
-    onChange={e => setData('email', e.target.value)}
-    className='w-full h-[45px] px-4 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-orange-400'
-    placeholder='Enter your email'
-/>
-{errors.email && <p className="text-red-500 text-sm">{errors.email}</p>}
+                                <form onSubmit={submit} className='w-full max-w-md space-y-6'>
+                                                                {/* Email */}
+                                                                <div className='flex flex-col gap-2'>
+                                                                    <label className='font-semibold'>Email</label>
+                                <input 
+                                    type='text'
+                                    value={data.email}
+                                    onChange={e => setData('email', e.target.value)}
+                                    className='w-full h-[45px] px-4 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-orange-400'
+                                    placeholder='Enter your email'
+                                />
+                                {errors.email && <p className="text-red-500 text-sm">{errors.email}</p>}
                                 </div>
 
                                 {/* Password */}

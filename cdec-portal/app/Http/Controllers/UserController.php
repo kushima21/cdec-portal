@@ -14,7 +14,7 @@ class UserController extends Controller
     {
         $users = Users::all()->map(function($user) {
             return [
-                'id' => $user->id,
+                'id' => $user->user_id,
                 'prefix' => $user->prefix,
                 'firstname' => $user->firstname,
                 'middlename' => $user->middlename,
@@ -88,25 +88,27 @@ class UserController extends Controller
         // ===========================
         // SAVE TO REGISTER TABLE
         // ===========================
-        Register::create([
-            'register_id' => $user->id, 
-            'firstname' => $user->firstname,
-            'lastname' => $user->lastname,
-            'school_id' => $user->school_id,
-            'email' => $user->email,
-            'password' => $user->password, // Already hashed
-            'status' => $user->status,
-            'roles' => $user->roles, // Casted automatically via Register model array cast
-        ]);
+  Register::create([
+    'register_id' => $user->user_id,
+    'firstname'   => $user->firstname,
+    'lastname'    => $user->lastname,
+    'school_id'   => $user->school_id,
+    'email'       => $user->email,
+    'password'    => $user->password,
+    'status'      => $user->status,
+    'roles'       => is_array($user->roles)
+                        ? $user->roles[0]
+                        : $user->roles,
+]);
 
         return redirect()
             ->route('users')
             ->with('success', 'User created successfully');
     }
 
-    public function update(Request $request, $id)
+    public function update(Request $request, $user_id)
     {
-        $user = Users::findOrFail($id);
+        $user = Users::findOrFail($user_id);
         $path = $user->profile_picture;
 
         if ($request->hasFile('profile_picture')) {
@@ -148,7 +150,7 @@ class UserController extends Controller
     {
         $users = Users::all()->map(function ($user) {
             return [
-                'id' => $user->id,
+                'id' => $user->user_id,
                 'fullname' => trim(
                     ($user->prefix ?? '') . ' ' .
                     $user->firstname . ' ' .

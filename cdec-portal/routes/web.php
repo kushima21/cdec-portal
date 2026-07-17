@@ -38,12 +38,17 @@ Route::get('/contact_us', fn () => Inertia::render('contact_us'))->name('contact
 | Auth Pages
 |--------------------------------------------------------------------------
 */
+
 Route::get('/register', [RegisteredUserController::class, 'create'])->name('register');
 Route::post('/register', [RegisteredUserController::class, 'store']);
 
 // LOGIN
-Route::get('/login', fn () => Inertia::render('Auth/Login'))->name('login.form');
-Route::post('/login', [RegisteredUserController::class, 'login'])->name('login');
+Route::get('/login', function () {
+    return Inertia::render('Auth/Login');
+})->name('login.form');
+
+Route::post('/login', [RegisteredUserController::class, 'login'])
+    ->name('login');
 /*
 |--------------------------------------------------------------------------
 | Admin Layout & Pages
@@ -109,7 +114,9 @@ Route::post('/building/store', [BuildingController::class, 'store'])->name('buil
 
 Route::get('/classes', fn () => Inertia::render('Admin/Classes'))->name('classes');
 
-Route::get('/schedule', fn () => Inertia::render('Admin/Schedule'))->name('schedule');
+Route::get('/schedule', [ScheduleController::class, 'index'])
+    ->name('schedule.index');
+
 Route::post('/schedule/store', [ScheduleController::class, 'store'])
     ->name('schedule.store');
     

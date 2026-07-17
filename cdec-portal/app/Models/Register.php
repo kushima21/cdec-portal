@@ -6,10 +6,13 @@ use Illuminate\Database\Eloquent\Model;
 
 class Register extends Model
 {
-    protected $table = 'register'; // Update to your correct database table name if different
+    protected $table = 'register';
+
+    protected $primaryKey = 'register_id';
+
+    public $timestamps = true;
 
     protected $fillable = [
-        'register_id',
         'firstname',
         'lastname',
         'school_id',
@@ -19,7 +22,11 @@ class Register extends Model
         'roles',
     ];
 
+    protected $hidden = [
+        'password',
+    ];
+
     protected $casts = [
-        'roles' => 'array', // 👈 Crucial: This avoids the Array to String Conversion issue here!
+        'password' => 'hashed',
     ];
 }
