@@ -18,6 +18,7 @@ class Course extends Model
         'course_code',
         'course_no',
         'descriptive_title',
+        'coordinator',
         'lecture_units',
         'lab_units',
         'total_units',

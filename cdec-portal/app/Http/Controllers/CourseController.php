@@ -31,8 +31,9 @@ public function store(Request $request)
 {
     $validated = $request->validate([
         'course_code' => 'required|string|max:255',
-        'course_no' => 'nullable|integer|min:0',
+        'course_no' => 'nullable|string|min:0',
         'descriptive_title' => 'required|string|max:255',
+        'coordinator' => 'required|string|max:255',
         'lecture_units' => 'nullable|integer|min:0',
         'lab_units' => 'nullable|integer|min:0',
     ]);
@@ -44,6 +45,7 @@ public function store(Request $request)
         'course_code' => $validated['course_code'],
         'course_no' => $validated['course_no'] ?? null,
         'descriptive_title' => $validated['descriptive_title'],
+        'coordinator' => $validated['coordinator'],
         'lecture_units' => $lecture,
         'lab_units' => $lab,
         'total_units' => $lecture + $lab,

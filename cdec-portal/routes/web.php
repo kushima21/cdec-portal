@@ -15,7 +15,7 @@ use App\Http\Controllers\ScheduleController;
 use App\Http\Controllers\AcademicTermController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\TertiaryController;
-
+use App\Http\Controllers\AdmissionController;
 /*
 |--------------------------------------------------------------------------
 | Public Routes
@@ -89,7 +89,8 @@ Route::get('/modal', fn () => Inertia::render('Modal/ModalAcademicTerm'))->name(
 Route::get('/preenroll', fn () => Inertia::render('Register/PreEnroll'))->name('preenroll');
 Route::get('/studentregister', fn () => Inertia::render('Register/StudentRegister'))->name('studentregister');
 
-Route::get('/application', fn () => Inertia::render('Admin/Application'))->name('application');
+Route::get('/application', [AdmissionController::class, 'index'])
+    ->name('application');
 /*
  Building
 */

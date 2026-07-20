@@ -39,9 +39,9 @@ export default function ModalCurricula({ setIsModalOpen, programs = [], courses 
 
     // Options Configuration
     const courseOptions = [
-        "General Education", "Core Courses", "Major Courses", 
-        "Elective Courses", "Mandated Courses", "Additional Courses", 
-        "PATHFIT", "NSTP", "Special Topic"
+        "PROFESSIONAL CORE COURSES", "Social Welfare Policies and Programs", "Social Work Methods/ Practice", 
+        "Field Practice/Instruction", "Other Required Professional Courses (Psychology Courses)", "GENERAL EDUCATION COURSES", 
+        "GENERAL EDUCATION ELECTIVE COURSES", "INSTITUTIONAL COURSES", "PHYSICAL ACTIVITIES TOWARDS HEALTH AND FITNESS (PATHFit)","NATIONAL TRAINING SERVICE PROGRAM (NSTP) – MILITARY SCIENCE"
     ];
 
     const handleInputChange = (e) => {

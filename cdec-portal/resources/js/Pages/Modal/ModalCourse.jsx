@@ -3,6 +3,7 @@ import { FaTimes, FaBookOpen } from 'react-icons/fa';
 import { useState } from 'react';
 
 export default function ModalCourse({ setIsModalOpen }) {
+  const [coordinator, setCoordinator] = useState('');
   const [lecture, setLecture] = useState('');
   const [lab, setLab] = useState('');
   const [errors, setErrors] = useState({});
@@ -78,7 +79,7 @@ export default function ModalCourse({ setIsModalOpen }) {
             <div className="col-span-1">
               <label className={labelStyle}>Course No.</label>
               <input 
-                type="number" 
+                type="text" 
                 name="course_no" 
                 placeholder="e.g., 1" 
                 className={inputStyle}
@@ -98,6 +99,27 @@ export default function ModalCourse({ setIsModalOpen }) {
                 required
               />
               {errors.descriptive_title && <p className={errorStyle}>{errors.descriptive_title}</p>}
+            </div>
+
+            {/* COURSE COORDINATOR SELECTION */}
+            <div className="md:col-span-2">
+              <label className={labelStyle}>Course Coordinator</label>
+              <select 
+                name="coordinator" 
+                value={coordinator}
+                onChange={(e) => setCoordinator(e.target.value)}
+                className={inputStyle}
+                required
+              >
+                <option value="" disabled hidden>Select an assigned coordinator</option>
+                <option value="Gec Coordinator">Gec Coordinator</option>
+                <option value="Crim Coordinator">Crim Coordinator</option>
+                <option value="SW Coordinator">SW Coordinator</option>
+                <option value="Education Coordinator">Education Coordinator</option>
+                <option value="CS Coordinator">CS Coordinator</option>
+                <option value="CBA Coordinator">CBA Coordinator</option>
+              </select>
+              {errors.coordinator && <p className={errorStyle}>{errors.coordinator}</p>}
             </div>
 
             {/* LECTURE UNIT */}

@@ -147,6 +147,7 @@ const auth = props.auth;
                             {renderMenuItem(<FaUserGraduate />, "Tertiary", "/tertiary")}
                             {renderMenuItem(<FaSitemap />, "Departments", "/department")}
                             {renderMenuItem(<FaSitemap />, "Academic Year", "/academicyear")}
+                            {renderMenuItem(<FaSitemap />, "Academic Enrollment", "/academicenrollment")}
                             {renderMenuItem(<FaSitemap />, "Academic Term", "/academicterm")}
                             
                             {/*Admission*/}
@@ -154,7 +155,7 @@ const auth = props.auth;
                                 ADMISSION
                             </div>
 
-                            {renderMenuItem(<FaSitemap />, "Application", "/application")}
+                            {renderMenuItem(<FaSitemap />, "Application for Admission", "/application")}
 
 
                             {/* ENROLLMENT */}
