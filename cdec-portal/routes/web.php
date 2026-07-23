@@ -142,4 +142,9 @@ Route::get('/dashboard', function () {
 })->name('dashboard');
 
 
+/* Academic Enrollment */
+
+Route::get('/academicenrollment', fn () => Inertia::render('Admin/AcademicEnrollment'))->name('academicenrollment');
+
+
 Route::post('/student/register', [TertiaryController::class, 'store']);

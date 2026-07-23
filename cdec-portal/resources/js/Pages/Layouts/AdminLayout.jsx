@@ -146,16 +146,23 @@ const auth = props.auth;
                             {renderMenuItem(<FaTools />, "Resources", "/resources")}
                             {renderMenuItem(<FaUserGraduate />, "Tertiary", "/tertiary")}
                             {renderMenuItem(<FaSitemap />, "Departments", "/department")}
+
+                            <div className='text-xs font-semibold text-gray-400 tracking-wide mt-6 mb-2'>
+                                MANAGE ACADEMIC
+                            </div>
+
                             {renderMenuItem(<FaSitemap />, "Academic Year", "/academicyear")}
                             {renderMenuItem(<FaSitemap />, "Academic Enrollment", "/academicenrollment")}
                             {renderMenuItem(<FaSitemap />, "Academic Term", "/academicterm")}
+
                             
                             {/*Admission*/}
                             <div className='text-xs font-semibold text-gray-400 tracking-wide mt-6 mb-2'>
-                                ADMISSION
+                            ADMISSION
                             </div>
 
                             {renderMenuItem(<FaSitemap />, "Application for Admission", "/application")}
+                            {renderMenuItem(<FaSitemap />, "Application", "/applicationstudent")}
 
 
                             {/* ENROLLMENT */}
